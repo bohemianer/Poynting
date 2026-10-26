@@ -129,8 +129,8 @@
     const height = container.clientHeight;
 
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x13110f);
-    scene.fog = new THREE.FogExp2(0x13110f, 0.015);
+    scene.background = new THREE.Color(0xece7df);
+    scene.fog = new THREE.FogExp2(0xece7df, 0.012);
 
     camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
     applyCameraPreset('isometric');
@@ -149,21 +149,21 @@
     controls.minDistance = 8;
     controls.maxDistance = 80;
 
-    // Warm ambient and sun lighting
-    const ambientLight = new THREE.AmbientLight(0xffedd5, 0.85);
+    // Warm studio keynote lighting
+    const ambientLight = new THREE.AmbientLight(0xfff8f0, 0.95);
     scene.add(ambientLight);
 
-    const dirLight1 = new THREE.DirectionalLight(0xfff7ed, 0.9);
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.95);
     dirLight1.position.set(20, 30, 20);
     dirLight1.castShadow = true;
     scene.add(dirLight1);
 
-    const dirLight2 = new THREE.DirectionalLight(0xf59e0b, 0.35);
+    const dirLight2 = new THREE.DirectionalLight(0xf59e0b, 0.25);
     dirLight2.position.set(-20, 15, -20);
     scene.add(dirLight2);
 
-    // Warm engineering grid floor
-    const gridHelper = new THREE.GridHelper(50, 50, 0x2e2721, 0x1a1612);
+    // Warm studio guidelines floor
+    const gridHelper = new THREE.GridHelper(50, 50, 0xd5ccbe, 0xe4ddd2);
     gridHelper.position.y = -0.05;
     scene.add(gridHelper);
 
@@ -442,15 +442,15 @@
     const s3d = state.s * SCALE_FACTOR;
     const traceThick = 0.22;
 
-    // 1. Dielectric Substrate (FR-4 - Warm natural golden amber resin)
+    // 1. Dielectric Substrate (FR-4 - Natural golden amber translucent resin)
     const dielectricGeo = new THREE.BoxGeometry(BOARD_WIDTH, h3d, BOARD_LENGTH);
     dielectricMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0xca8a04,
+      color: 0xd4a017,
       transparent: true,
-      opacity: state.transDielectric ? 0.24 : 0.85,
-      roughness: 0.22,
+      opacity: state.transDielectric ? 0.35 : 0.88,
+      roughness: 0.18,
       metalness: 0.05,
-      transmission: state.transDielectric ? 0.78 : 0.1,
+      transmission: state.transDielectric ? 0.72 : 0.1,
       ior: 1.5,
       depthWrite: !state.transDielectric
     });
@@ -461,27 +461,27 @@
 
     // Warm amber edge outline
     const edges = new THREE.EdgesGeometry(dielectricGeo);
-    const lineMat = new THREE.LineBasicMaterial({ color: 0x92400e, transparent: true, opacity: 0.35 });
+    const lineMat = new THREE.LineBasicMaterial({ color: 0xa16207, transparent: true, opacity: 0.4 });
     const wireframe = new THREE.LineSegments(edges, lineMat);
     dielectricMesh.add(wireframe);
 
-    // 2. Ground Plane (GND at bottom, Y = 0 - Warm dark bronze)
+    // 2. Ground Plane (GND at bottom, Y = 0 - Brushed titanium/copper chassis)
     const groundGeo = new THREE.BoxGeometry(BOARD_WIDTH, 0.12, BOARD_LENGTH);
     groundMaterial = new THREE.MeshStandardMaterial({
-      color: 0x3d332a,
-      metalness: 0.82,
-      roughness: 0.38
+      color: 0x8c7a6b,
+      metalness: 0.8,
+      roughness: 0.35
     });
     groundMesh = new THREE.Mesh(groundGeo, groundMaterial);
     groundMesh.position.set(0, -0.06, 0);
     groundMesh.receiveShadow = true;
     boardGroup.add(groundMesh);
 
-    // 3. Copper Signal Trace(s) - Warm burnished copper
+    // 3. Copper Signal Trace(s) - Polished metallic copper
     copperMaterial = new THREE.MeshStandardMaterial({
-      color: 0xe28743,
-      metalness: 0.85,
-      roughness: 0.22
+      color: 0xca6528,
+      metalness: 0.88,
+      roughness: 0.2
     });
 
     if (state.mode === 'differential') {
@@ -489,7 +489,7 @@
 
       // Left trace (TX+)
       traceMesh1 = new THREE.Mesh(traceGeo, copperMaterial.clone());
-      traceMesh1.material.color.setHex(0xe28743);
+      traceMesh1.material.color.setHex(0xca6528);
       const x1 = -(s3d / 2 + w3d / 2);
       traceMesh1.position.set(x1, h3d + traceThick / 2, 0);
       traceMesh1.castShadow = true;
@@ -497,7 +497,7 @@
 
       // Right trace (TX-)
       traceMesh2 = new THREE.Mesh(traceGeo, copperMaterial.clone());
-      traceMesh2.material.color.setHex(0xd97706);
+      traceMesh2.material.color.setHex(0xb45309);
       const x2 = +(s3d / 2 + w3d / 2);
       traceMesh2.position.set(x2, h3d + traceThick / 2, 0);
       traceMesh2.castShadow = true;
@@ -532,17 +532,17 @@
 
   function buildSingleHighFields(h3d, w3d, zCount, zStep) {
     const eLinesMat = new THREE.LineBasicMaterial({
-      color: 0xfb923c, // Warm coral peach E-field
+      color: 0xc84b18, // Crisp burnt orange E-field
       transparent: true,
-      opacity: 0.7,
-      blending: THREE.AdditiveBlending
+      opacity: 0.85,
+      blending: THREE.NormalBlending
     });
 
     const hLinesMat = new THREE.LineBasicMaterial({
-      color: 0xa3e635, // Warm lime sage H-field
+      color: 0x166534, // Crisp forest emerald H-field
       transparent: true,
-      opacity: 0.72,
-      blending: THREE.AdditiveBlending
+      opacity: 0.85,
+      blending: THREE.NormalBlending
     });
 
     const ePositions = [];
@@ -623,17 +623,17 @@
 
   function buildDifferentialFields(h3d, w3d, s3d, zCount, zStep) {
     const eLinesMat = new THREE.LineBasicMaterial({
-      color: 0xfb923c, // Warm coral peach E-field
+      color: 0xc84b18, // Crisp burnt orange E-field
       transparent: true,
-      opacity: 0.7,
-      blending: THREE.AdditiveBlending
+      opacity: 0.85,
+      blending: THREE.NormalBlending
     });
 
     const hLinesMat = new THREE.LineBasicMaterial({
-      color: 0xa3e635, // Warm lime sage H-field
+      color: 0x166534, // Crisp forest emerald H-field
       transparent: true,
-      opacity: 0.72,
-      blending: THREE.AdditiveBlending
+      opacity: 0.85,
+      blending: THREE.NormalBlending
     });
 
     const ePositions = [];
@@ -772,20 +772,20 @@
     const ctx = canvas.getContext('2d');
     const grad = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
     grad.addColorStop(0, '#ffffff');
-    grad.addColorStop(0.35, '#fbbf24');
-    grad.addColorStop(0.85, 'rgba(245, 158, 11, 0.3)');
-    grad.addColorStop(1, 'rgba(245, 158, 11, 0)');
+    grad.addColorStop(0.35, '#f59e0b');
+    grad.addColorStop(0.85, 'rgba(180, 83, 9, 0.6)');
+    grad.addColorStop(1, 'rgba(180, 83, 9, 0)');
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, 32, 32);
 
     const texture = new THREE.CanvasTexture(canvas);
 
     const material = new THREE.PointsMaterial({
-      color: 0xfffbeb,
-      size: 0.65,
+      color: 0xd97706,
+      size: 0.72,
       map: texture,
       transparent: true,
-      blending: THREE.AdditiveBlending,
+      blending: THREE.NormalBlending,
       depthWrite: false
     });
 
@@ -888,9 +888,10 @@
       const mat = new THREE.LineSegments(
         geo,
         new THREE.LineBasicMaterial({
-          color: 0xf43f5e,
+          color: 0xbe123c,
           transparent: true,
-          opacity: 0.6
+          opacity: 0.75,
+          blending: THREE.NormalBlending
         })
       );
       mat.visible = state.showReturnCurrent;
@@ -914,10 +915,10 @@
       const mat = new THREE.LineSegments(
         geo,
         new THREE.LineBasicMaterial({
-          color: 0xf43f5e,
+          color: 0xbe123c,
           transparent: true,
-          opacity: 0.82,
-          blending: THREE.AdditiveBlending
+          opacity: 0.85,
+          blending: THREE.NormalBlending
         })
       );
       mat.visible = state.showReturnCurrent;
@@ -946,10 +947,10 @@
       const mat = new THREE.LineSegments(
         geo,
         new THREE.LineBasicMaterial({
-          color: 0xf43f5e,
+          color: 0xbe123c,
           transparent: true,
-          opacity: 0.72,
-          blending: THREE.AdditiveBlending
+          opacity: 0.8,
+          blending: THREE.NormalBlending
         })
       );
       mat.visible = state.showReturnCurrent;
@@ -1063,11 +1064,11 @@
     const w = scopeCanvas.width;
     const h = scopeCanvas.height;
 
-    scopeCtx.fillStyle = '#0e0c0a';
+    scopeCtx.fillStyle = '#191613';
     scopeCtx.fillRect(0, 0, w, h);
 
     // Warm sepia reticle lines
-    scopeCtx.strokeStyle = 'rgba(245, 158, 11, 0.08)';
+    scopeCtx.strokeStyle = 'rgba(217, 107, 20, 0.14)';
     scopeCtx.lineWidth = 1;
     scopeCtx.setLineDash([2, 4]);
 
@@ -1086,7 +1087,7 @@
     scopeCtx.setLineDash([]);
 
     const cy = h / 2;
-    scopeCtx.strokeStyle = 'rgba(245, 158, 11, 0.16)';
+    scopeCtx.strokeStyle = 'rgba(217, 107, 20, 0.3)';
     scopeCtx.beginPath();
     scopeCtx.moveTo(0, cy);
     scopeCtx.lineTo(w, cy);
@@ -1097,9 +1098,9 @@
     if (state.mode === 'differential') {
       const noise = state.isNoiseActive ? state.noiseAmp : 0;
 
-      // TX+ (Signal + Noise) - Warm coral peach
-      scopeCtx.strokeStyle = '#fb923c';
-      scopeCtx.lineWidth = 1.3;
+      // TX+ (Signal + Noise) - Crisp orange
+      scopeCtx.strokeStyle = '#ea580c';
+      scopeCtx.lineWidth = 1.4;
       scopeCtx.beginPath();
       for (let x = 0; x < w; x++) {
         const phi = t - (x / w) * 6;
@@ -1112,9 +1113,9 @@
       }
       scopeCtx.stroke();
 
-      // TX- (Inverted Signal + Identical Noise) - Warm rose
-      scopeCtx.strokeStyle = '#f43f5e';
-      scopeCtx.lineWidth = 1.3;
+      // TX- (Inverted Signal + Identical Noise) - Crisp red
+      scopeCtx.strokeStyle = '#dc2626';
+      scopeCtx.lineWidth = 1.4;
       scopeCtx.beginPath();
       for (let x = 0; x < w; x++) {
         const phi = t - (x / w) * 6;
@@ -1127,9 +1128,9 @@
       }
       scopeCtx.stroke();
 
-      // Diff Out = (TX+ - TX-) / 2 - Radiant warm gold
-      scopeCtx.strokeStyle = '#fbbf24';
-      scopeCtx.lineWidth = 2.0;
+      // Diff Out = (TX+ - TX-) / 2 - Radiant pure gold
+      scopeCtx.strokeStyle = '#f59e0b';
+      scopeCtx.lineWidth = 2.2;
       scopeCtx.beginPath();
       for (let x = 0; x < w; x++) {
         const phi = t - (x / w) * 6;
@@ -1141,9 +1142,9 @@
       scopeCtx.stroke();
 
     } else {
-      // Driver signal - Warm coral peach
-      scopeCtx.strokeStyle = '#fb923c';
-      scopeCtx.lineWidth = 1.3;
+      // Driver signal - Crisp orange
+      scopeCtx.strokeStyle = '#ea580c';
+      scopeCtx.lineWidth = 1.4;
       scopeCtx.beginPath();
       for (let x = 0; x < w; x++) {
         const phi = t - (x / w) * 6;
@@ -1156,9 +1157,9 @@
 
       const phaseDelay = state.mode === 'single-high' ? 1.8 : 0.08;
 
-      // Receiver signal - Radiant warm gold
-      scopeCtx.strokeStyle = '#fbbf24';
-      scopeCtx.lineWidth = 1.8;
+      // Receiver signal - Radiant pure gold
+      scopeCtx.strokeStyle = '#f59e0b';
+      scopeCtx.lineWidth = 2.0;
       scopeCtx.beginPath();
       for (let x = 0; x < w; x++) {
         const phi = t - (x / w) * 6 - phaseDelay;
@@ -1178,7 +1179,7 @@
     const w = crossCanvas.width;
     const h = crossCanvas.height;
 
-    crossCtx.fillStyle = '#0e0c0a';
+    crossCtx.fillStyle = '#191613';
     crossCtx.fillRect(0, 0, w, h);
 
     const centerX = w / 2;
@@ -1188,17 +1189,17 @@
     const traceW = Math.min(90, state.w * 24);
     const traceH = 8;
 
-    // Substrate - Natural golden amber FR-4
-    crossCtx.fillStyle = 'rgba(202, 138, 4, 0.22)';
+    // Substrate - Golden amber FR-4
+    crossCtx.fillStyle = 'rgba(212, 160, 23, 0.28)';
     crossCtx.fillRect(20, traceY, w - 40, subH);
-    crossCtx.strokeStyle = '#ca8a04';
+    crossCtx.strokeStyle = '#d4a017';
     crossCtx.lineWidth = 1;
     crossCtx.strokeRect(20, traceY, w - 40, subH);
 
-    // Ground Plane - Warm bronze
-    crossCtx.fillStyle = '#4a3e35';
+    // Ground Plane - Brushed copper chassis
+    crossCtx.fillStyle = '#8c7a6b';
     crossCtx.fillRect(15, groundY, w - 30, 6);
-    crossCtx.fillStyle = '#a89887';
+    crossCtx.fillStyle = '#cfc5b6';
     crossCtx.font = '10px monospace';
     crossCtx.fillText('GND 参考地平面', 22, groundY + 18);
 
@@ -1207,17 +1208,17 @@
       const x1 = centerX - spacing / 2 - traceW;
       const x2 = centerX + spacing / 2;
 
-      crossCtx.fillStyle = '#e28743';
+      crossCtx.fillStyle = '#ca6528';
       crossCtx.fillRect(x1, traceY - traceH, traceW, traceH);
       crossCtx.fillStyle = '#fff';
       crossCtx.font = '9.5px sans-serif';
       crossCtx.fillText('Line (+)', x1 + 4, traceY - traceH - 3);
 
-      crossCtx.fillStyle = '#d97706';
+      crossCtx.fillStyle = '#b45309';
       crossCtx.fillRect(x2, traceY - traceH, traceW, traceH);
       crossCtx.fillText('Line (-)', x2 + 4, traceY - traceH - 3);
 
-      crossCtx.strokeStyle = '#fb923c';
+      crossCtx.strokeStyle = '#c84b18';
       crossCtx.lineWidth = 1.2;
       for (let y = traceY - traceH / 2; y <= traceY + subH * 0.4; y += 10) {
         crossCtx.beginPath();
@@ -1227,14 +1228,14 @@
       }
     } else {
       const xTrace = centerX - traceW / 2;
-      crossCtx.fillStyle = '#e28743';
+      crossCtx.fillStyle = '#ca6528';
       crossCtx.fillRect(xTrace, traceY - traceH, traceW, traceH);
       crossCtx.fillStyle = '#fff';
       crossCtx.font = '9.5px sans-serif';
       crossCtx.fillText('信号铜线', xTrace + traceW / 2 - 16, traceY - traceH - 3);
 
-      crossCtx.strokeStyle = '#fb923c';
-      crossCtx.lineWidth = 1.0;
+      crossCtx.strokeStyle = '#c84b18';
+      crossCtx.lineWidth = 1.1;
       for (let x = xTrace + 6; x <= xTrace + traceW - 6; x += 10) {
         crossCtx.beginPath();
         crossCtx.moveTo(x, traceY);
@@ -1242,7 +1243,7 @@
         crossCtx.stroke();
       }
 
-      crossCtx.strokeStyle = '#a3e635';
+      crossCtx.strokeStyle = '#166534';
       crossCtx.lineWidth = 1.2;
       crossCtx.beginPath();
       crossCtx.ellipse(centerX, traceY + subH / 2, traceW / 2 + 16, subH / 2 + 12, 0, 0, Math.PI * 2);
