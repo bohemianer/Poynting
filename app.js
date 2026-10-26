@@ -30,6 +30,7 @@
     showH: true,
     showS: true,
     showReturnCurrent: true,
+    showCurrentFlow: true,
     showElectrons: true,
     transDielectric: true,
 
@@ -58,6 +59,12 @@
   let particlesGroup = null;
   let electronsGroup = null;
   let returnCurrentGroup = null;
+  let currentIndicatorsGroup = null;
+
+  // Textures for animated directional current ribbons
+  let arrowTexTx1 = null;
+  let arrowTexTx2 = null;
+  let arrowTexGnd = null;
 
   // Materials & Meshes references
   let dielectricMesh = null;
@@ -188,12 +195,14 @@
     particlesGroup = new THREE.Group();
     electronsGroup = new THREE.Group();
     returnCurrentGroup = new THREE.Group();
+    currentIndicatorsGroup = new THREE.Group();
 
     scene.add(boardGroup);
     scene.add(fieldsGroup);
     scene.add(particlesGroup);
     scene.add(electronsGroup);
     scene.add(returnCurrentGroup);
+    scene.add(currentIndicatorsGroup);
 
     window.addEventListener('resize', onWindowResize);
   }
@@ -431,12 +440,14 @@
     clearGroup(particlesGroup);
     clearGroup(electronsGroup);
     clearGroup(returnCurrentGroup);
+    clearGroup(currentIndicatorsGroup);
 
     buildBoardGeometry();
     buildFieldLines();
     buildPoyntingParticles();
     buildElectronParticles();
     buildReturnCurrentVisuals();
+    buildCurrentDirectionVisuals();
   }
 
   function clearGroup(group) {
@@ -974,6 +985,171 @@
     }
   }
 
+  // --- Dynamic Current Flow Direction Visuals (Arrows & 3D Badges) ---
+  function buildCurrentDirectionVisuals() {
+    arrowTexTx1 = null;
+    arrowTexTx2 = null;
+    arrowTexGnd = null;
+
+    if (state.mode === 'single-low') return;
+
+    const h3d = state.h * SCALE_FACTOR;
+    const w3d = state.w * SCALE_FACTOR;
+    const s3d = state.s * SCALE_FACTOR;
+    const traceThick = 0.22;
+    const ribbonLen = BOARD_LENGTH * 0.94;
+    const ribbonY = h3d + traceThick + 0.02;
+
+    if (state.mode === 'differential') {
+      const xLeft = -(s3d / 2 + w3d / 2);
+      const xRight = +(s3d / 2 + w3d / 2);
+
+      // 1. Line (+) forward current ribbon
+      arrowTexTx1 = makeArrowTexture(true, '#0071E3', 'I(+) ➔');
+      const matTx1 = new THREE.MeshBasicMaterial({
+        map: arrowTexTx1,
+        transparent: true,
+        opacity: 0.92,
+        depthWrite: false
+      });
+      const geoTx1 = new THREE.PlaneGeometry(w3d * 0.88, ribbonLen);
+      const meshTx1 = new THREE.Mesh(geoTx1, matTx1);
+      meshTx1.rotation.x = -Math.PI / 2;
+      meshTx1.position.set(xLeft, ribbonY, 0);
+      currentIndicatorsGroup.add(meshTx1);
+
+      // 2. Line (-) backward current ribbon
+      arrowTexTx2 = makeArrowTexture(false, '#FF3B30', '⬅ I(-)');
+      const matTx2 = new THREE.MeshBasicMaterial({
+        map: arrowTexTx2,
+        transparent: true,
+        opacity: 0.92,
+        depthWrite: false
+      });
+      const geoTx2 = new THREE.PlaneGeometry(w3d * 0.88, ribbonLen);
+      const meshTx2 = new THREE.Mesh(geoTx2, matTx2);
+      meshTx2.rotation.x = -Math.PI / 2;
+      meshTx2.position.set(xRight, ribbonY, 0);
+      currentIndicatorsGroup.add(meshTx2);
+
+      // 3. Floating 3D Sprite Badges at front
+      const zBadge = -BOARD_LENGTH / 2 + 1.2;
+      const spriteTx1 = createTextSprite('Line (+) · 电流 I(+) 向前 ➔', 'rgba(0, 113, 227, 0.92)', '#FFFFFF');
+      spriteTx1.position.set(xLeft, ribbonY + 1.4, zBadge);
+      currentIndicatorsGroup.add(spriteTx1);
+
+      const spriteTx2 = createTextSprite('Line (-) · 电流 I(-) 向后 ⬅', 'rgba(255, 59, 48, 0.92)', '#FFFFFF');
+      spriteTx2.position.set(xRight, ribbonY + 1.4, zBadge);
+      currentIndicatorsGroup.add(spriteTx2);
+
+      // Central dielectric energy badge
+      const spriteEnergy = createTextSprite('坡印廷能流 S ➔ (负负得正，全向前送能)', 'rgba(255, 149, 0, 0.95)', '#FFFFFF');
+      spriteEnergy.position.set(0, h3d * 0.55, 0);
+      spriteEnergy.scale.set(8.5, 2.1, 1);
+      currentIndicatorsGroup.add(spriteEnergy);
+
+    } else if (state.mode === 'single-high') {
+      // 1. Signal line forward current ribbon
+      arrowTexTx1 = makeArrowTexture(true, '#0071E3', '信号电流 I ➔');
+      const matTx1 = new THREE.MeshBasicMaterial({
+        map: arrowTexTx1,
+        transparent: true,
+        opacity: 0.92,
+        depthWrite: false
+      });
+      const geoTx1 = new THREE.PlaneGeometry(w3d * 0.88, ribbonLen);
+      const meshTx1 = new THREE.Mesh(geoTx1, matTx1);
+      meshTx1.rotation.x = -Math.PI / 2;
+      meshTx1.position.set(0, ribbonY, 0);
+      currentIndicatorsGroup.add(meshTx1);
+
+      // 2. Ground return backward current ribbon
+      arrowTexGnd = makeArrowTexture(false, '#5856D6', '⬅ 地回流 I_gnd');
+      const matGnd = new THREE.MeshBasicMaterial({
+        map: arrowTexGnd,
+        transparent: true,
+        opacity: 0.88,
+        depthWrite: false
+      });
+      const geoGnd = new THREE.PlaneGeometry(w3d * 1.4, ribbonLen);
+      const meshGnd = new THREE.Mesh(geoGnd, matGnd);
+      meshGnd.rotation.x = -Math.PI / 2;
+      meshGnd.position.set(0, 0.05, 0);
+      currentIndicatorsGroup.add(meshGnd);
+
+      // 3. Floating 3D Sprite Badges
+      const zBadge = -BOARD_LENGTH / 2 + 1.2;
+      const spriteSig = createTextSprite('走线传导电流 I ➔ (去往负载)', 'rgba(0, 113, 227, 0.92)', '#FFFFFF');
+      spriteSig.position.set(0, ribbonY + 1.4, zBadge);
+      currentIndicatorsGroup.add(spriteSig);
+
+      const spriteGnd = createTextSprite('地平面回流 I_gnd ⬅ (流回源端)', 'rgba(88, 86, 214, 0.92)', '#FFFFFF');
+      spriteGnd.position.set(0, 0.6, zBadge + 3);
+      currentIndicatorsGroup.add(spriteGnd);
+
+      const spriteS = createTextSprite('介质坡印廷能流 S ➔ (光速能量冲刺)', 'rgba(255, 149, 0, 0.95)', '#FFFFFF');
+      spriteS.position.set(0, h3d * 0.5, 0);
+      spriteS.scale.set(8.2, 2.0, 1);
+      currentIndicatorsGroup.add(spriteS);
+    }
+
+    currentIndicatorsGroup.visible = state.showCurrentFlow;
+  }
+
+  function makeArrowTexture(isForward, color, textLabel) {
+    const c = document.createElement('canvas');
+    c.width = 512;
+    c.height = 64;
+    const ctx = c.getContext('2d');
+    ctx.clearRect(0, 0, 512, 64);
+
+    ctx.fillStyle = color;
+    ctx.font = 'bold 26px -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    if (isForward) {
+      ctx.fillText(`${textLabel}   ➤   ➤   ➤`, 256, 32);
+    } else {
+      ctx.fillText(`◀   ◀   ◀   ${textLabel}`, 256, 32);
+    }
+
+    const tex = new THREE.CanvasTexture(c);
+    tex.wrapS = THREE.RepeatWrapping;
+    tex.wrapT = THREE.ClampToEdgeWrapping;
+    tex.repeat.set(3, 1);
+    return tex;
+  }
+
+  function createTextSprite(text, bgColor, textColor) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 440;
+    canvas.height = 96;
+    const ctx = canvas.getContext('2d');
+
+    // Apple floating glass capsule pill
+    ctx.fillStyle = bgColor;
+    ctx.beginPath();
+    ctx.roundRect(8, 8, 424, 80, 40);
+    ctx.fill();
+
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    ctx.fillStyle = textColor;
+    ctx.font = '600 26px -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, 220, 48);
+
+    const tex = new THREE.CanvasTexture(canvas);
+    const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false });
+    const sprite = new THREE.Sprite(mat);
+    sprite.scale.set(6.8, 1.5, 1);
+    return sprite;
+  }
+
   // ==========================================================================
   // Animation Loop
   // ==========================================================================
@@ -982,6 +1158,13 @@
 
     if (!state.isPaused) {
       state.simTime += 0.016 * state.speed;
+
+      // Dynamic animated current direction ribbons
+      if (state.showCurrentFlow) {
+        if (arrowTexTx1) arrowTexTx1.offset.x -= 0.007 * state.speed;
+        if (arrowTexTx2) arrowTexTx2.offset.x += 0.007 * state.speed;
+        if (arrowTexGnd) arrowTexGnd.offset.x += 0.007 * state.speed;
+      }
     }
 
     controls.update();
@@ -1562,6 +1745,12 @@
       if (m) m.visible = state.showElectrons;
     });
 
+    document.getElementById('chk-current-flow').addEventListener('change', e => {
+      state.showCurrentFlow = e.target.checked;
+      togglePill('pill-current-flow', state.showCurrentFlow);
+      if (currentIndicatorsGroup) currentIndicatorsGroup.visible = state.showCurrentFlow;
+    });
+
     // Pill toggles
     document.getElementById('pill-e-field').addEventListener('click', () => {
       state.showE = !state.showE;
@@ -1600,6 +1789,13 @@
       togglePill('pill-electrons', state.showElectrons);
       const m = electronsGroup.getObjectByName('electronParticles');
       if (m) m.visible = state.showElectrons;
+    });
+
+    document.getElementById('pill-current-flow').addEventListener('click', () => {
+      state.showCurrentFlow = !state.showCurrentFlow;
+      document.getElementById('chk-current-flow').checked = state.showCurrentFlow;
+      togglePill('pill-current-flow', state.showCurrentFlow);
+      if (currentIndicatorsGroup) currentIndicatorsGroup.visible = state.showCurrentFlow;
     });
 
     document.getElementById('pill-trans-dielectric').addEventListener('click', () => {
@@ -1663,18 +1859,24 @@
     const pillElectrons = document.getElementById('pill-electrons');
 
     const scopeLegend = document.getElementById('scope-legend');
+    const diffInsightBox = document.getElementById('diff-insight-box');
+    const legendCurrentFlow = document.getElementById('legend-current-flow');
+    const pillCurrentFlow = document.getElementById('pill-current-flow');
 
     if (newMode === 'differential') {
       groupS.style.display = 'flex';
       diffNoiseBox.style.display = 'block';
+      diffInsightBox.style.display = 'block';
       legendElectrons.style.display = 'none';
       legendE.style.display = 'flex';
       legendH.style.display = 'flex';
       legendS.style.display = 'flex';
+      legendCurrentFlow.style.display = 'flex';
 
       pillE.style.display = 'inline-block';
       pillH.style.display = 'inline-block';
       pillS.style.display = 'inline-block';
+      pillCurrentFlow.style.display = 'inline-block';
       pillElectrons.style.display = 'none';
 
       scopeLegend.innerHTML = `
@@ -1685,14 +1887,17 @@
     } else if (newMode === 'single-low') {
       groupS.style.display = 'none';
       diffNoiseBox.style.display = 'none';
+      diffInsightBox.style.display = 'none';
       legendElectrons.style.display = 'flex';
       legendE.style.display = 'none';
       legendH.style.display = 'none';
       legendS.style.display = 'none';
+      legendCurrentFlow.style.display = 'none';
 
       pillE.style.display = 'none';
       pillH.style.display = 'none';
       pillS.style.display = 'none';
+      pillCurrentFlow.style.display = 'none';
       pillElectrons.style.display = 'inline-block';
 
       scopeLegend.innerHTML = `
@@ -1702,14 +1907,17 @@
     } else {
       groupS.style.display = 'none';
       diffNoiseBox.style.display = 'none';
+      diffInsightBox.style.display = 'none';
       legendElectrons.style.display = 'none';
       legendE.style.display = 'flex';
       legendH.style.display = 'flex';
       legendS.style.display = 'flex';
+      legendCurrentFlow.style.display = 'flex';
 
       pillE.style.display = 'inline-block';
       pillH.style.display = 'inline-block';
       pillS.style.display = 'inline-block';
+      pillCurrentFlow.style.display = 'inline-block';
       pillElectrons.style.display = 'none';
 
       scopeLegend.innerHTML = `

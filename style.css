@@ -360,6 +360,7 @@ body, html {
 .color-dot.sage { background: var(--apple-green); }
 .color-dot.amber { background: var(--apple-orange); }
 .color-dot.rose { background: var(--apple-purple); }
+.color-dot.teal { background: #30B0C7; }
 .color-dot.blue { background: #0A84FF; }
 
 .check-text {
@@ -384,6 +385,55 @@ body, html {
   color: var(--apple-blue);
   margin-bottom: 3px;
   text-transform: uppercase;
+}
+
+/* Deep Insight Box for Differential Current vs Energy Flow */
+.insight-box {
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 113, 227, 0.22);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-top: 8px;
+  box-shadow: 0 4px 14px rgba(0, 113, 227, 0.06);
+}
+
+.insight-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--apple-blue);
+  margin-bottom: 7px;
+  line-height: 1.4;
+}
+
+.insight-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.formula-line {
+  font-size: 10.5px;
+  padding: 4px 7px;
+  border-radius: 5px;
+  font-family: var(--font-mono);
+  line-height: 1.4;
+}
+
+.formula-line.blue {
+  background: rgba(0, 113, 227, 0.08);
+  color: #0071E3;
+}
+
+.formula-line.red {
+  background: rgba(255, 59, 48, 0.08);
+  color: #FF3B30;
+}
+
+.insight-desc {
+  margin-top: 4px;
+  font-size: 10px;
+  color: var(--apple-text-secondary);
+  line-height: 1.45;
 }
 
 /* Right HUD - Apple Style Oscilloscope Card */

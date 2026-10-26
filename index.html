@@ -102,6 +102,11 @@
               <span class="color-dot rose"></span>
               <span class="check-text">地平面返回电流 (自约束路径)</span>
             </label>
+            <label class="check-row" id="legend-current-flow">
+              <input type="checkbox" id="chk-current-flow" checked>
+              <span class="color-dot teal"></span>
+              <span class="check-text">导线传导电流 I (双线互为回路)</span>
+            </label>
             <label class="check-row" id="legend-electrons" style="display:none;">
               <input type="checkbox" id="chk-electrons" checked>
               <span class="color-dot blue"></span>
@@ -115,6 +120,16 @@
               <strong>信号在介质中传播，铜线充当引路波导：</strong><br>
               良导体内部内电场 <i>E</i> ≈ 0，故铜线内能量流 <i>S</i> = <i>E</i> × <i>H</i> ≈ 0。绝大部分能量由铜线与地构成的波导护栏约束在介质中高速传输。
             </p>
+          </div>
+
+          <!-- Deep Insight Callout Box -->
+          <div class="insight-box" id="diff-insight-box">
+            <div class="insight-badge">💡 为什么双线电流相反，能流方向却完全相同？</div>
+            <div class="insight-content">
+              <div class="formula-line blue"><b>Line (+)</b>：电压 +V，电流向前 ➔ 能流 <i>S</i> = <i>E</i> × <i>H</i> 向前</div>
+              <div class="formula-line red"><b>Line (-)</b>：电压 −V，电流向后 ➔ 能流 <i>S</i> = (−<i>E</i>) × (−<i>H</i>) = +<i>S</i> <b>全向前！</b></div>
+              <div class="insight-desc"><b>常识直觉</b>：两根线都在向接收芯片<b>输送电能 (P = V·I > 0)</b>；如果负线能量反着流，岂不变成接收端向发射端倒灌电了？</div>
+            </div>
           </div>
         </div>
       </div>
@@ -213,6 +228,7 @@
           <button class="t-btn active" id="pill-h-field">磁场 H</button>
           <button class="t-btn active" id="pill-s-poynting">能量流 S</button>
           <button class="t-btn active" id="pill-return-cur">回流路径</button>
+          <button class="t-btn active" id="pill-current-flow">导线电流 I ⇄</button>
           <button class="t-btn active" id="pill-electrons" style="display:none;">自由电子</button>
           <button class="t-btn active" id="pill-trans-dielectric">透视介质</button>
           <button class="t-btn" id="pill-pause">暂停</button>
