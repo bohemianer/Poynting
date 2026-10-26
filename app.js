@@ -1000,94 +1000,108 @@
     const ribbonLen = BOARD_LENGTH * 0.94;
     const ribbonY = h3d + traceThick + 0.02;
 
+    // 1. Explicit End Markers (TX Driver at far end, RX Receiver at near end)
+    const zFarSource = -BOARD_LENGTH / 2 + 0.5;
+    const zNearLoad = +BOARD_LENGTH / 2 - 0.5;
+
+    const badgeTX = createTextSprite('⚡️ 驱动源端 TX (Source / 信号出发)', 'rgba(0, 0, 0, 0.88)', '#30D158');
+    badgeTX.position.set(0, ribbonY + 2.2, zFarSource);
+    badgeTX.scale.set(7.5, 1.7, 1);
+    currentIndicatorsGroup.add(badgeTX);
+
+    const badgeRX = createTextSprite('🎯 接收负载端 RX (Load / 终端吸收)', 'rgba(0, 0, 0, 0.88)', '#FF9F0A');
+    badgeRX.position.set(0, ribbonY + 2.2, zNearLoad);
+    badgeRX.scale.set(7.5, 1.7, 1);
+    currentIndicatorsGroup.add(badgeRX);
+
     if (state.mode === 'differential') {
       const xLeft = -(s3d / 2 + w3d / 2);
       const xRight = +(s3d / 2 + w3d / 2);
 
-      // 1. Line (+) forward current ribbon
-      arrowTexTx1 = makeArrowTexture(true, '#0071E3', 'I(+) ➔');
+      // 1. Line (+) forward current ribbon (TX -> RX)
+      arrowTexTx1 = makeLongitudinalArrowTexture(true, '#0071E3', 'I(+) ➔');
       const matTx1 = new THREE.MeshBasicMaterial({
         map: arrowTexTx1,
         transparent: true,
         opacity: 0.92,
         depthWrite: false
       });
-      const geoTx1 = new THREE.PlaneGeometry(w3d * 0.88, ribbonLen);
+      const geoTx1 = new THREE.PlaneGeometry(w3d * 0.9, ribbonLen);
       const meshTx1 = new THREE.Mesh(geoTx1, matTx1);
       meshTx1.rotation.x = -Math.PI / 2;
       meshTx1.position.set(xLeft, ribbonY, 0);
       currentIndicatorsGroup.add(meshTx1);
 
-      // 2. Line (-) backward current ribbon
-      arrowTexTx2 = makeArrowTexture(false, '#FF3B30', '⬅ I(-)');
+      // 2. Line (-) backward current ribbon (RX -> TX)
+      arrowTexTx2 = makeLongitudinalArrowTexture(false, '#FF3B30', '⬅ I(-)');
       const matTx2 = new THREE.MeshBasicMaterial({
         map: arrowTexTx2,
         transparent: true,
         opacity: 0.92,
         depthWrite: false
       });
-      const geoTx2 = new THREE.PlaneGeometry(w3d * 0.88, ribbonLen);
+      const geoTx2 = new THREE.PlaneGeometry(w3d * 0.9, ribbonLen);
       const meshTx2 = new THREE.Mesh(geoTx2, matTx2);
       meshTx2.rotation.x = -Math.PI / 2;
       meshTx2.position.set(xRight, ribbonY, 0);
       currentIndicatorsGroup.add(meshTx2);
 
-      // 3. Floating 3D Sprite Badges at front
-      const zBadge = -BOARD_LENGTH / 2 + 1.2;
-      const spriteTx1 = createTextSprite('Line (+) · 电流 I(+) 向前 ➔', 'rgba(0, 113, 227, 0.92)', '#FFFFFF');
-      spriteTx1.position.set(xLeft, ribbonY + 1.4, zBadge);
+      // 3. Floating 3D Badges
+      const zBadge = -BOARD_LENGTH / 2 + 3.6;
+      const spriteTx1 = createTextSprite('Line (+) · 电流 I(+) 前往负载 ➔', 'rgba(0, 113, 227, 0.92)', '#FFFFFF');
+      spriteTx1.position.set(xLeft, ribbonY + 1.2, zBadge);
       currentIndicatorsGroup.add(spriteTx1);
 
-      const spriteTx2 = createTextSprite('Line (-) · 电流 I(-) 向后 ⬅', 'rgba(255, 59, 48, 0.92)', '#FFFFFF');
-      spriteTx2.position.set(xRight, ribbonY + 1.4, zBadge);
+      const spriteTx2 = createTextSprite('Line (-) · 电流 I(-) 回流源端 ⬅', 'rgba(255, 59, 48, 0.92)', '#FFFFFF');
+      spriteTx2.position.set(xRight, ribbonY + 1.2, zBadge);
       currentIndicatorsGroup.add(spriteTx2);
 
       // Central dielectric energy badge
-      const spriteEnergy = createTextSprite('坡印廷能流 S ➔ (负负得正，全向前送能)', 'rgba(255, 149, 0, 0.95)', '#FFFFFF');
+      const spriteEnergy = createTextSprite('坡印廷能流 S ➔ (负负得正，全奔向负载)', 'rgba(255, 149, 0, 0.95)', '#FFFFFF');
       spriteEnergy.position.set(0, h3d * 0.55, 0);
       spriteEnergy.scale.set(8.5, 2.1, 1);
       currentIndicatorsGroup.add(spriteEnergy);
 
     } else if (state.mode === 'single-high') {
-      // 1. Signal line forward current ribbon
-      arrowTexTx1 = makeArrowTexture(true, '#0071E3', '信号电流 I ➔');
+      // 1. Signal line forward current ribbon (TX -> RX)
+      arrowTexTx1 = makeLongitudinalArrowTexture(true, '#0071E3', 'I ➔ 前往负载');
       const matTx1 = new THREE.MeshBasicMaterial({
         map: arrowTexTx1,
         transparent: true,
         opacity: 0.92,
         depthWrite: false
       });
-      const geoTx1 = new THREE.PlaneGeometry(w3d * 0.88, ribbonLen);
+      const geoTx1 = new THREE.PlaneGeometry(w3d * 0.9, ribbonLen);
       const meshTx1 = new THREE.Mesh(geoTx1, matTx1);
       meshTx1.rotation.x = -Math.PI / 2;
       meshTx1.position.set(0, ribbonY, 0);
       currentIndicatorsGroup.add(meshTx1);
 
-      // 2. Ground return backward current ribbon
-      arrowTexGnd = makeArrowTexture(false, '#5856D6', '⬅ 地回流 I_gnd');
+      // 2. Ground return backward current ribbon (RX -> TX)
+      arrowTexGnd = makeLongitudinalArrowTexture(false, '#5856D6', 'I_gnd ⬅ 回流源端');
       const matGnd = new THREE.MeshBasicMaterial({
         map: arrowTexGnd,
         transparent: true,
         opacity: 0.88,
         depthWrite: false
       });
-      const geoGnd = new THREE.PlaneGeometry(w3d * 1.4, ribbonLen);
+      const geoGnd = new THREE.PlaneGeometry(w3d * 1.5, ribbonLen);
       const meshGnd = new THREE.Mesh(geoGnd, matGnd);
       meshGnd.rotation.x = -Math.PI / 2;
       meshGnd.position.set(0, 0.05, 0);
       currentIndicatorsGroup.add(meshGnd);
 
       // 3. Floating 3D Sprite Badges
-      const zBadge = -BOARD_LENGTH / 2 + 1.2;
-      const spriteSig = createTextSprite('走线传导电流 I ➔ (去往负载)', 'rgba(0, 113, 227, 0.92)', '#FFFFFF');
-      spriteSig.position.set(0, ribbonY + 1.4, zBadge);
+      const zBadge = -BOARD_LENGTH / 2 + 3.6;
+      const spriteSig = createTextSprite('走线传导电流 I ➔ (TX 驱动源 ➔ RX 负载)', 'rgba(0, 113, 227, 0.92)', '#FFFFFF');
+      spriteSig.position.set(0, ribbonY + 1.2, zBadge);
       currentIndicatorsGroup.add(spriteSig);
 
-      const spriteGnd = createTextSprite('地平面回流 I_gnd ⬅ (流回源端)', 'rgba(88, 86, 214, 0.92)', '#FFFFFF');
-      spriteGnd.position.set(0, 0.6, zBadge + 3);
+      const spriteGnd = createTextSprite('地平面回流 I_gnd ⬅ (RX 负载 ➔ TX 源端)', 'rgba(88, 86, 214, 0.92)', '#FFFFFF');
+      spriteGnd.position.set(0, 0.6, zBadge + 3.2);
       currentIndicatorsGroup.add(spriteGnd);
 
-      const spriteS = createTextSprite('介质坡印廷能流 S ➔ (光速能量冲刺)', 'rgba(255, 149, 0, 0.95)', '#FFFFFF');
+      const spriteS = createTextSprite('介质坡印廷能流 S ➔ (光速电磁能量)', 'rgba(255, 149, 0, 0.95)', '#FFFFFF');
       spriteS.position.set(0, h3d * 0.5, 0);
       spriteS.scale.set(8.2, 2.0, 1);
       currentIndicatorsGroup.add(spriteS);
@@ -1096,28 +1110,52 @@
     currentIndicatorsGroup.visible = state.showCurrentFlow;
   }
 
-  function makeArrowTexture(isForward, color, textLabel) {
+  function makeLongitudinalArrowTexture(isForward, color, textLabel) {
+    // 128 width (transverse), 512 height (longitudinal)
     const c = document.createElement('canvas');
-    c.width = 512;
-    c.height = 64;
+    c.width = 128;
+    c.height = 512;
     const ctx = c.getContext('2d');
-    ctx.clearRect(0, 0, 512, 64);
+    ctx.clearRect(0, 0, 128, 512);
 
+    // Draw repeating chevron arrows pointing along length
+    // If forward: points towards +Z (down in canvas V)
+    // If backward: points towards -Z (up in canvas V)
     ctx.fillStyle = color;
-    ctx.font = 'bold 26px -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 4;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
 
-    if (isForward) {
-      ctx.fillText(`${textLabel}   ➤   ➤   ➤`, 256, 32);
-    } else {
-      ctx.fillText(`◀   ◀   ◀   ${textLabel}`, 256, 32);
+    const numArrows = 4;
+    const step = 512 / numArrows;
+
+    for (let i = 0; i < numArrows; i++) {
+      const centerY = (i + 0.5) * step;
+      ctx.beginPath();
+      if (isForward) {
+        // Pointing down (towards +Z / RX)
+        ctx.moveTo(32, centerY - 18);
+        ctx.lineTo(64, centerY + 18);
+        ctx.lineTo(96, centerY - 18);
+      } else {
+        // Pointing up (towards -Z / TX)
+        ctx.moveTo(32, centerY + 18);
+        ctx.lineTo(64, centerY - 18);
+        ctx.lineTo(96, centerY + 18);
+      }
+      ctx.stroke();
+
+      // Draw glowing dot
+      ctx.beginPath();
+      ctx.arc(64, centerY, 5, 0, Math.PI * 2);
+      ctx.fill();
     }
 
     const tex = new THREE.CanvasTexture(c);
-    tex.wrapS = THREE.RepeatWrapping;
-    tex.wrapT = THREE.ClampToEdgeWrapping;
-    tex.repeat.set(3, 1);
+    tex.wrapS = THREE.ClampToEdgeWrapping;
+    tex.wrapT = THREE.RepeatWrapping;
+    tex.repeat.set(1, 4);
     return tex;
   }
 
@@ -1159,11 +1197,11 @@
     if (!state.isPaused) {
       state.simTime += 0.016 * state.speed;
 
-      // Dynamic animated current direction ribbons
+      // Dynamic animated current direction ribbons (marching along Z length)
       if (state.showCurrentFlow) {
-        if (arrowTexTx1) arrowTexTx1.offset.x -= 0.007 * state.speed;
-        if (arrowTexTx2) arrowTexTx2.offset.x += 0.007 * state.speed;
-        if (arrowTexGnd) arrowTexGnd.offset.x += 0.007 * state.speed;
+        if (arrowTexTx1) arrowTexTx1.offset.y -= 0.008 * state.speed;
+        if (arrowTexTx2) arrowTexTx2.offset.y += 0.008 * state.speed;
+        if (arrowTexGnd) arrowTexGnd.offset.y += 0.008 * state.speed;
       }
     }
 
