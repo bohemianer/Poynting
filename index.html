@@ -3,13 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>电磁场与高频信号传输 3D 可视化物理实验室 | EM Signal Propagation Lab</title>
+  <title>电磁场与高频信号传输 3D 可视化工程实验室 | EM Signal Lab</title>
   <link rel="stylesheet" href="style.css">
-  <!-- Local Three.js & Controls with CDN fallback -->
   <script src="three.min.js"></script>
   <script src="OrbitControls.js"></script>
   <script>
-    // Fallback if local scripts fail for any reason
     if (typeof THREE === 'undefined') {
       document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>');
       document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"><\/script>');
@@ -18,330 +16,302 @@
 </head>
 <body>
   <div id="app-container">
-    <!-- Top Header -->
+    <!-- Clean Minimalist Header -->
     <header class="app-header">
       <div class="header-left">
-        <div class="logo-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M2 12h20M12 2v20M5 5l14 14M5 19L19 5" opacity="0.3"/>
-            <circle cx="12" cy="12" r="9" stroke="#38bdf8"/>
-            <path d="M12 3a9 9 0 0 1 9 9" stroke="#f59e0b" stroke-width="2.5"/>
-            <path d="M3 12a9 9 0 0 1 9-9" stroke="#10b981" stroke-width="2.5"/>
-          </svg>
-        </div>
-        <div>
-          <h1 class="main-title">电磁场与高频信号传输 3D 可视化物理实验室</h1>
-          <p class="sub-title">直观观察微带线电磁波在介质中的传播、坡印廷能量流与回流机理</p>
+        <div class="brand-title">
+          <span class="brand-badge">RF/EM LAB</span>
+          <span class="main-title">电磁场与高频信号传输 3D 可视化仿真</span>
         </div>
       </div>
 
-      <!-- Mode Switcher Tabs -->
-      <div class="mode-tabs">
-        <button class="mode-tab active" data-mode="single-high" id="tab-single-high">
-          <span class="tab-badge">核心</span>
-          <span class="tab-label">单端高速信号 (微带线)</span>
-        </button>
-        <button class="mode-tab" data-mode="differential" id="tab-differential">
-          <span class="tab-badge">抗噪</span>
-          <span class="tab-label">高速差分信号 (差分对)</span>
-        </button>
-        <button class="mode-tab" data-mode="single-low" id="tab-single-low">
-          <span class="tab-badge">对比</span>
-          <span class="tab-label">单端低速信号 (集总参数)</span>
-        </button>
-      </div>
+      <!-- Segmented Control for Modes -->
+      <nav class="mode-segmented-control">
+        <button class="segment-btn active" data-mode="single-high" id="tab-single-high">单端高速 (微带线)</button>
+        <button class="segment-btn" data-mode="differential" id="tab-differential">高速差分 (差分对)</button>
+        <button class="segment-btn" data-mode="single-low" id="tab-single-low">单端低速 (集总参数)</button>
+      </nav>
 
       <div class="header-right">
-        <button class="icon-btn" id="btn-physics-info" title="电磁物理底层机理深度解析">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <!-- Global Unit Switcher mm / mil -->
+        <div class="unit-switcher" title="切换几何参数单位">
+          <span class="unit-label">单位</span>
+          <div class="unit-toggle-group">
+            <button class="unit-btn active" data-unit="mm" id="btn-unit-mm">mm</button>
+            <button class="unit-btn" data-unit="mil" id="btn-unit-mil">mil</button>
+          </div>
+        </div>
+
+        <button class="action-btn" id="btn-physics-info" title="电磁物理底层机理深度解析">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="10"></circle>
             <path d="M12 16v-4M12 8h.01"></path>
           </svg>
-          <span>物理深度解析</span>
+          <span>物理机理</span>
         </button>
-        <button class="icon-btn" id="btn-cross-section" title="打开/关闭截面 2D 分析窗口">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+        <button class="action-btn" id="btn-cross-section" title="截面 2D 分析">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="3" y="3" width="18" height="18" rx="2"></rect>
             <line x1="3" y1="12" x2="21" y2="12"></line>
             <line x1="12" y1="3" x2="12" y2="21"></line>
           </svg>
-          <span>截面剖视</span>
+          <span>截面</span>
         </button>
       </div>
     </header>
 
-    <!-- Main Content Area -->
+    <!-- Main 3D Viewport Area -->
     <main class="main-stage">
-      <!-- 3D Canvas -->
       <div id="canvas-container"></div>
 
-      <!-- Floating View Presets -->
-      <div class="view-presets-bar">
-        <button class="preset-btn active" data-view="isometric" title="3D 立体斜透视角">3D 透视</button>
-        <button class="preset-btn" data-view="front" title="沿导线正截面观察 (E/H场分布)">正截面 (E/H环)</button>
-        <button class="preset-btn" data-view="side" title="侧视观察能量流推进">侧视走廊</button>
-        <button class="preset-btn" data-view="top" title="俯视观察回流分布">俯视平面</button>
-        <button class="preset-btn" id="btn-reset-cam" title="复位视角">视角复位</button>
+      <!-- Camera View Presets -->
+      <div class="view-preset-strip">
+        <button class="v-btn active" data-view="isometric">3D 透视</button>
+        <button class="v-btn" data-view="front">正截面 (E/H)</button>
+        <button class="v-btn" data-view="side">侧视走廊</button>
+        <button class="v-btn" data-view="top">俯视回流</button>
+        <button class="v-btn reset" id="btn-reset-cam">复位</button>
       </div>
 
-      <!-- Left Float Info & Legend Overlay (Matching Screenshot Aesthetics) -->
-      <div class="floating-panel top-left-panel">
-        <div class="panel-header-small">
-          <span class="live-dot"></span>
-          <span id="current-mode-title">微带线（Microstrip）电磁场与坡印廷能量流 3D 可视化</span>
+      <!-- Left HUD: Minimalist Layer Checklist & Note -->
+      <div class="hud-panel left-hud">
+        <div class="hud-title-row">
+          <span class="hud-heading" id="current-mode-title">微带线电磁场与坡印廷能流</span>
+          <button class="collapse-toggle" id="btn-toggle-left-hud" title="收起/展开">−</button>
         </div>
-        <p class="panel-desc" id="current-mode-desc">
-          实时观察高频传输线介质层中的电场 (E)、磁场 (H) 架构与电磁能量 (S) 传播过程
-        </p>
-
-        <!-- Dynamic Legend with Visibility Toggles -->
-        <div class="legend-group">
-          <label class="legend-item" id="legend-e-field">
-            <input type="checkbox" id="chk-e-field" checked>
-            <span class="legend-indicator dot-cyan"></span>
-            <span class="legend-text" id="label-e-field">电场 E 矢量（垂直与边缘辐射）</span>
-          </label>
-          <label class="legend-item" id="legend-h-field">
-            <input type="checkbox" id="chk-h-field" checked>
-            <span class="legend-indicator dot-green"></span>
-            <span class="legend-text" id="label-h-field">磁场 H 环线（环绕信号走线）</span>
-          </label>
-          <label class="legend-item" id="legend-s-poynting">
-            <input type="checkbox" id="chk-s-poynting" checked>
-            <span class="legend-indicator dot-amber"></span>
-            <span class="legend-text" id="label-s-poynting">坡印廷矢量 S 粒子（介质中能量推进）</span>
-          </label>
-          <label class="legend-item" id="legend-return-current">
-            <input type="checkbox" id="chk-return-current" checked>
-            <span class="legend-indicator dot-purple"></span>
-            <span class="legend-text" id="label-return-current">地平面返回电流（高频自约束通道）</span>
-          </label>
-          <label class="legend-item" id="legend-electrons" style="display:none;">
-            <input type="checkbox" id="chk-electrons" checked>
-            <span class="legend-indicator dot-blue"></span>
-            <span class="legend-text">铜线内自由电子（热运动+微米漂移）</span>
-          </label>
-        </div>
-
-        <!-- Mode Specific Interactive Callout -->
-        <div class="physics-tip-card" id="mode-physics-card">
-          <div class="tip-badge" id="tip-badge">关键电磁物理本质</div>
-          <p id="tip-content">
-            <strong>信号不是在铜线里流，而是在介质里跑！</strong><br>
-            铜线内部电导率极高导致内电场 <i>E</i> ≈ 0，因此铜线内能量流 <i>S</i> = <i>E</i> × <i>H</i> ≈ 0。绝大部分电磁能量真真切切在走线与地之间的绝缘介质（FR-4）中向前冲！
-          </p>
-        </div>
-      </div>
-
-      <!-- Right Overlay: Real-Time Oscilloscope / Signal Monitor -->
-      <div class="floating-panel top-right-panel" id="oscilloscope-panel">
-        <div class="panel-header-small">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-          </svg>
-          <span id="scope-title">接收端信号眼图 / 示波器波形</span>
-          <span class="scope-status" id="scope-status">LIVE</span>
-        </div>
-        <canvas id="scopeCanvas" width="300" height="130"></canvas>
-        <div class="scope-legend" id="scope-legend">
-          <span class="scope-tag tag-blue" id="tag-v1">走线信号 V_in</span>
-          <span class="scope-tag tag-green" id="tag-v2">接收端 V_out</span>
-        </div>
-        <!-- Diff Noise Inject Button -->
-        <div class="diff-noise-control" id="diff-noise-box" style="display:none;">
-          <div class="noise-row">
-            <span>共模空间噪声干扰 (EMI)：</span>
-            <input type="range" id="slider-noise" min="0" max="1" step="0.05" value="0.4">
-            <span id="noise-val">0.40 V</span>
+        <div class="hud-body" id="left-hud-body">
+          <div class="clean-checklist">
+            <label class="check-row" id="legend-e-field">
+              <input type="checkbox" id="chk-e-field" checked>
+              <span class="color-dot cyan"></span>
+              <span class="check-text">电场 E 矢量 (垂直与边缘辐射)</span>
+            </label>
+            <label class="check-row" id="legend-h-field">
+              <input type="checkbox" id="chk-h-field" checked>
+              <span class="color-dot green"></span>
+              <span class="check-text">磁场 H 环线 (环绕导线闭合)</span>
+            </label>
+            <label class="check-row" id="legend-s-poynting">
+              <input type="checkbox" id="chk-s-poynting" checked>
+              <span class="color-dot amber"></span>
+              <span class="check-text">坡印廷矢量 S 粒子 (介质中能流)</span>
+            </label>
+            <label class="check-row" id="legend-return-current">
+              <input type="checkbox" id="chk-return-current" checked>
+              <span class="color-dot purple"></span>
+              <span class="check-text">地平面返回电流 (自约束路径)</span>
+            </label>
+            <label class="check-row" id="legend-electrons" style="display:none;">
+              <input type="checkbox" id="chk-electrons" checked>
+              <span class="color-dot blue"></span>
+              <span class="check-text">铜线内自由电子 (热运动与漂移)</span>
+            </label>
           </div>
-          <button class="inject-btn" id="btn-toggle-noise">切换噪声注入</button>
-          <p class="diff-hint">观察：外部强共模噪声同时入侵正负双线，差分接收器相减 (V<sub>+</sub> − V<sub>−</sub>) 瞬间对消噪声！</p>
+
+          <div class="clean-note-box" id="mode-physics-card">
+            <div class="note-tag" id="tip-badge">物理本质</div>
+            <p class="note-desc" id="tip-content">
+              <strong>信号在介质中传播，铜线充当引路波导：</strong><br>
+              良导体内部内电场 <i>E</i> ≈ 0，故铜线内能量流 <i>S</i> = <i>E</i> × <i>H</i> ≈ 0。绝大部分能量由铜线与地构成的波导护栏约束在介质中高速传输。
+            </p>
+          </div>
         </div>
       </div>
 
-      <!-- Floating 2D Cross Section Modal -->
-      <div class="floating-panel cross-section-panel" id="cross-section-panel" style="display:none;">
-        <div class="panel-header-small">
-          <span>微带线横截面 2D 电磁分布切片分析</span>
-          <button class="close-btn" id="btn-close-cross">×</button>
+      <!-- Right HUD: Clean Signal Monitor / Oscilloscope -->
+      <div class="hud-panel right-hud" id="oscilloscope-panel">
+        <div class="hud-title-row">
+          <span class="hud-heading">信号示波器 (波形监视)</span>
+          <span class="scope-indicator">LIVE</span>
         </div>
-        <canvas id="crossCanvas" width="340" height="200"></canvas>
-        <div class="cross-info-text">
-          <small>★ 蓝色虚线：电场线直插地平面及侧边凸起 (Fringing Field)<br>★ 绿色闭合椭圆：环绕导线的磁力线环<br>★ 金黄色粒子：介质层内部的坡印廷能流密度</small>
+        <div class="hud-body">
+          <canvas id="scopeCanvas" width="280" height="120"></canvas>
+          <div class="scope-legend-row" id="scope-legend">
+            <span class="legend-chip blue">驱动端 V_in</span>
+            <span class="legend-chip green">接收端 V_out</span>
+          </div>
+
+          <!-- Diff Mode Noise Injection Control -->
+          <div class="diff-noise-control" id="diff-noise-box" style="display:none;">
+            <div class="noise-slider-line">
+              <span>共模噪声 (EMI):</span>
+              <input type="range" id="slider-noise" min="0" max="1" step="0.05" value="0.4">
+              <span class="mono-readout" id="noise-val">0.40 V</span>
+            </div>
+            <button class="flat-action-btn" id="btn-toggle-noise">切换噪声注入</button>
+            <div class="sub-hint">差分接收端执行相减 (V<sub>+</sub> − V<sub>−</sub>)，共模噪声瞬间完全抵消。</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2D Cross Section Modal Panel -->
+      <div class="hud-panel cross-panel" id="cross-section-panel" style="display:none;">
+        <div class="hud-title-row">
+          <span class="hud-heading">微带线横截面 2D 电磁分布</span>
+          <button class="close-x" id="btn-close-cross">×</button>
+        </div>
+        <div class="hud-body">
+          <canvas id="crossCanvas" width="320" height="180"></canvas>
+          <div class="cross-hint">
+            • 蓝色线：电场线直插地平面与边缘弧线<br>
+            • 绿色环：闭合磁场回环<br>
+            • 金色粒子：介质层内部坡印廷能流
+          </div>
         </div>
       </div>
     </main>
 
-    <!-- Bottom Dashboard: Metrics & Parameter Sliders (Matching Screenshot) -->
-    <footer class="app-dashboard">
-      <!-- Row 1: Parameter Metric Cards -->
-      <div class="metrics-row">
-        <div class="metric-card" id="card-z0">
-          <div class="metric-label">微带线特征阻抗 <span class="math-sub">Z₀</span></div>
-          <div class="metric-value-box">
-            <span class="metric-num" id="val-z0">54.4</span>
-            <span class="metric-unit">Ω</span>
+    <!-- Bottom Engineering Control & Metrics Deck -->
+    <footer class="app-deck">
+      <!-- Row 1: Metrics Output Strip -->
+      <div class="deck-metrics-strip">
+        <div class="deck-metric-cell" id="card-z0">
+          <span class="metric-caption">特征阻抗 <span class="math-sym">Z₀</span></span>
+          <div class="metric-readout">
+            <span class="val-mono" id="val-z0">54.4</span>
+            <span class="unit-sym">Ω</span>
           </div>
         </div>
 
-        <div class="metric-card" id="card-eps-eff">
-          <div class="metric-label">有效介电常数 <span class="math-sub">ε_eff</span></div>
-          <div class="metric-value-box">
-            <span class="metric-num" id="val-eps-eff">3.29</span>
+        <div class="deck-metric-cell" id="card-eps-eff">
+          <span class="metric-caption">有效介电常数 <span class="math-sym">ε_eff</span></span>
+          <div class="metric-readout">
+            <span class="val-mono" id="val-eps-eff">3.29</span>
           </div>
         </div>
 
-        <div class="metric-card" id="card-w-h">
-          <div class="metric-label">宽厚比 <span class="math-sub">W / h</span></div>
-          <div class="metric-value-box">
-            <span class="metric-num" id="val-wh">1.67</span>
+        <div class="deck-metric-cell" id="card-w-h">
+          <span class="metric-caption">宽厚比 <span class="math-sym">W / h</span></span>
+          <div class="metric-readout">
+            <span class="val-mono" id="val-wh">1.67</span>
           </div>
         </div>
 
-        <div class="metric-card" id="card-velocity">
-          <div class="metric-label">信号相位传播速度 <span class="math-sub">v_p</span></div>
-          <div class="metric-value-box">
-            <span class="metric-num" id="val-velocity">0.55</span>
-            <span class="metric-unit">c (16.5 cm/ns)</span>
+        <div class="deck-metric-cell" id="card-velocity">
+          <span class="metric-caption">相位速度 <span class="math-sym">v_p</span></span>
+          <div class="metric-readout">
+            <span class="val-mono" id="val-velocity">0.55</span>
+            <span class="unit-sym">c (16.5 cm/ns)</span>
           </div>
         </div>
 
-        <div class="metric-card" id="card-extra">
-          <div class="metric-label" id="label-extra">每英寸走线延迟 <span class="math-sub">T_pd</span></div>
-          <div class="metric-value-box">
-            <span class="metric-num" id="val-extra">154.2</span>
-            <span class="metric-unit" id="unit-extra">ps/inch</span>
+        <div class="deck-metric-cell" id="card-extra">
+          <span class="metric-caption" id="label-extra">走线延迟 <span class="math-sym">T_pd</span></span>
+          <div class="metric-readout">
+            <span class="val-mono" id="val-extra">153.8</span>
+            <span class="unit-sym" id="unit-extra">ps/in</span>
           </div>
         </div>
       </div>
 
-      <!-- Row 2: Visual Action Toggles & Parameter Sliders -->
-      <div class="controls-row">
-        <!-- Quick Action Toggles (Buttons matching image) -->
-        <div class="toggle-pill-group">
-          <button class="pill-btn active" id="pill-e-field">电场线 E</button>
-          <button class="pill-btn active" id="pill-h-field">磁场环 H</button>
-          <button class="pill-btn active" id="pill-s-poynting">能量流 S 粒子</button>
-          <button class="pill-btn active" id="pill-return-cur">地平面回流</button>
-          <button class="pill-btn active" id="pill-electrons" style="display:none;">自由电子</button>
-          <button class="pill-btn active" id="pill-trans-dielectric">透视介质 (FR-4)</button>
-          <button class="pill-btn" id="pill-pause">暂停动画</button>
+      <!-- Row 2: Parameters Grid with Manual Numeric Input & Sliders -->
+      <div class="deck-controls-strip">
+        <!-- Display Toggles -->
+        <div class="toggle-bar">
+          <button class="t-btn active" id="pill-e-field">电场 E</button>
+          <button class="t-btn active" id="pill-h-field">磁场 H</button>
+          <button class="t-btn active" id="pill-s-poynting">能量流 S</button>
+          <button class="t-btn active" id="pill-return-cur">回流路径</button>
+          <button class="t-btn active" id="pill-electrons" style="display:none;">自由电子</button>
+          <button class="t-btn active" id="pill-trans-dielectric">透视介质</button>
+          <button class="t-btn" id="pill-pause">暂停</button>
         </div>
 
-        <div class="sliders-container">
-          <!-- Slider: Trace Width W -->
-          <div class="slider-control" id="group-w">
-            <div class="slider-header">
-              <span class="slider-title">走线宽度 W</span>
-              <span class="slider-readout"><strong id="readout-w">2.0</strong> mm</span>
+        <div class="params-deck-grid">
+          <!-- Parameter 1: Trace Width W (Manual Input + Slider) -->
+          <div class="param-input-group" id="group-w">
+            <div class="param-label-row">
+              <span class="p-title">走线宽度 W</span>
+              <div class="input-with-unit">
+                <input type="number" id="num-input-w" class="param-num-input" value="2.0" step="0.1">
+                <span class="unit-text active-unit-text">mm</span>
+              </div>
             </div>
-            <input type="range" id="slider-w" min="0.4" max="4.0" step="0.1" value="2.0">
+            <input type="range" id="slider-w" min="0.2" max="5.0" step="0.05" value="2.0">
+            <span class="secondary-readout" id="sub-readout-w">78.7 mil</span>
           </div>
 
-          <!-- Slider: Substrate Height h -->
-          <div class="slider-control" id="group-h">
-            <div class="slider-header">
-              <span class="slider-title">介质厚度 h</span>
-              <span class="slider-readout"><strong id="readout-h">1.2</strong> mm</span>
+          <!-- Parameter 2: Substrate Height h (Manual Input + Slider) -->
+          <div class="param-input-group" id="group-h">
+            <div class="param-label-row">
+              <span class="p-title">介质厚度 h</span>
+              <div class="input-with-unit">
+                <input type="number" id="num-input-h" class="param-num-input" value="1.2" step="0.1">
+                <span class="unit-text active-unit-text">mm</span>
+              </div>
             </div>
-            <input type="range" id="slider-h" min="0.4" max="3.0" step="0.1" value="1.2">
+            <input type="range" id="slider-h" min="0.2" max="3.5" step="0.05" value="1.2">
+            <span class="secondary-readout" id="sub-readout-h">47.2 mil</span>
           </div>
 
-          <!-- Slider: Differential Spacing S (Hidden in single-ended modes) -->
-          <div class="slider-control" id="group-s" style="display:none;">
-            <div class="slider-header">
-              <span class="slider-title">差分间距 S</span>
-              <span class="slider-readout"><strong id="readout-s">0.8</strong> mm</span>
+          <!-- Parameter 3: Differential Spacing S (Manual Input + Slider) -->
+          <div class="param-input-group" id="group-s" style="display:none;">
+            <div class="param-label-row">
+              <span class="p-title">差分线距 S</span>
+              <div class="input-with-unit">
+                <input type="number" id="num-input-s" class="param-num-input" value="0.8" step="0.1">
+                <span class="unit-text active-unit-text">mm</span>
+              </div>
             </div>
-            <input type="range" id="slider-s" min="0.3" max="3.5" step="0.1" value="0.8">
+            <input type="range" id="slider-s" min="0.2" max="4.0" step="0.05" value="0.8">
+            <span class="secondary-readout" id="sub-readout-s">31.5 mil</span>
           </div>
 
-          <!-- Slider: Dielectric Material Preset -->
-          <div class="slider-control" id="group-material">
-            <div class="slider-header">
-              <span class="slider-title">基材材质 (ε_r)</span>
-              <span class="slider-readout" id="readout-material">FR-4 (4.4)</span>
+          <!-- Parameter 4: Material Dielectric Constant -->
+          <div class="param-input-group" id="group-material">
+            <div class="param-label-row">
+              <span class="p-title">介质板材 (ε_r)</span>
+              <span class="mono-badge" id="readout-material-eps">4.4</span>
             </div>
-            <select id="select-material" class="material-select">
-              <option value="4.4" selected>FR-4 环氧玻纤板 (εr = 4.4)</option>
-              <option value="3.48">罗杰斯 Rogers RO4350B (εr = 3.48)</option>
+            <select id="select-material" class="flat-select">
+              <option value="4.4" selected>FR-4 玻纤板 (εr = 4.4)</option>
+              <option value="3.48">Rogers RO4350B (εr = 3.48)</option>
               <option value="2.1">PTFE 聚四氟乙烯 (εr = 2.1)</option>
-              <option value="1.0">空气介质理想线 (εr = 1.0)</option>
+              <option value="1.0">空气介质 (εr = 1.0)</option>
             </select>
           </div>
 
-          <!-- Slider: EM Wave Animation Speed -->
-          <div class="slider-control" id="group-speed">
-            <div class="slider-header">
-              <span class="slider-title">电磁波传播速度</span>
-              <span class="slider-readout"><strong id="readout-speed">1.5</strong>x</span>
+          <!-- Parameter 5: Wave Simulation Speed -->
+          <div class="param-input-group" id="group-speed">
+            <div class="param-label-row">
+              <span class="p-title">波速动画倍率</span>
+              <span class="mono-badge" id="readout-speed">1.5x</span>
             </div>
             <input type="range" id="slider-speed" min="0.2" max="3.0" step="0.1" value="1.5">
           </div>
         </div>
-
-        <div class="interaction-hint">
-          <span>提示：按住鼠标左键旋转 3D 视角，滚动鼠标中键缩放观察截面结构，右键平移。</span>
-        </div>
       </div>
     </footer>
 
-    <!-- Deep Physics Explainer Modal -->
+    <!-- Deep Physics Modal -->
     <div class="modal-backdrop" id="physics-modal" style="display:none;">
       <div class="modal-dialog">
         <div class="modal-header">
-          <h2>电磁场物理底层深度拆解：为什么信号在介质中传播？</h2>
-          <button class="close-btn" id="btn-close-modal">×</button>
+          <h2>高频电磁场理论与微带线物理机理</h2>
+          <button class="close-x" id="btn-close-modal">×</button>
         </div>
         <div class="modal-body">
-          <section class="modal-section">
-            <h3>1. 麦克斯韦电磁理论与坡印廷矢量（Poynting Vector）</h3>
-            <p>在低速电路理论中，我们习惯于“电流从电源流出沿导线跑”的集总水管视角。但在高频高速电路中，波长可与导线尺寸比拟，电磁波场论才是本质：</p>
-            <div class="formula-box">
-              $$\mathbf{S} = \mathbf{E} \times \mathbf{H}$$
-            </div>
-            <p>坡印廷矢量 $\mathbf{S}$ 代表电磁能量的流向与功率密度。在微带线中：</p>
-            <ul>
-              <li><strong>电场 $\mathbf{E}$：</strong>从信号铜线正电荷垂直指向下方的参考地平面（主要分布在绝缘介质基底中）。</li>
-              <li><strong>磁场 $\mathbf{H}$：</strong>环绕信号走线闭合（同样分布在周围介质中）。</li>
-              <li><strong>能量流 $\mathbf{S} = \mathbf{E} \times \mathbf{H}$：</strong>由右手定则，$\mathbf{E}$ 与 $\mathbf{H}$ 叉乘的结果是一个<strong>严格沿着走线方向向前推进的矢量</strong>！</li>
-            </ul>
-            <div class="alert-box">
-              <strong>铜线内部在发生什么？</strong><br>
-              因为铜是良导体（电导率 $\sigma \approx 5.8 \times 10^7 \text{ S/m}$），导体内部由于自由电子瞬间重排，内部电场 $E \approx 0$。<br>
-              <strong>既然铜线内部电场近乎为零，那么铜线内部的能量流 $S$ 也几乎为零！</strong><br>
-              <strong>绝大部分能量真真切切是在走线与地平面之间的绝缘介质（FR-4 / PTFE）中以波的形式传输的！铜线的主要角色是充当“波导护栏”来约束电磁场！</strong>
-            </div>
+          <section class="modal-block">
+            <h3>1. 麦克斯韦电磁理论与坡印廷能流 (S = E × H)</h3>
+            <p>传统集总电路中“电子沿导线奔跑携带信号”的理解仅在低频适用。高频下信号波长与导线尺寸相当，电磁能量以空间行波形式在导线四周的介质中向前推进。</p>
+            <div class="math-box">$$\mathbf{S} = \mathbf{E} \times \mathbf{H}$$</div>
+            <p>因为铜线电导率极高，导线内部电场 <i>E</i> ≈ 0，故铜导体内部能流 <i>S</i> ≈ 0。绝大部分能量分布在信号走线与参考地平面之间的绝缘介质（FR-4 / PTFE）中。铜线起到的是<strong>边界护栏（Boundary Condition）与引导电磁波的波导作用</strong>。</p>
           </section>
 
-          <section class="modal-section">
-            <h3>2. 为什么磁场线总是“弯曲的闭合环”？</h3>
-            <p>根据麦克斯韦方程组的<strong>高斯磁定律</strong>：</p>
-            <div class="formula-box">
-              $$\nabla \cdot \mathbf{B} = 0$$
-            </div>
-            <p>自然界中不存在单独的“磁单极子”。电荷有正有负，所以电场线可以有源有汇（从正电荷发出，终止于负电荷）；但<strong>磁力线绝不可能有起点或终点，必须在空间中首尾相接形成闭合回环</strong>。在铜线正下方的介质核心区，磁力线被上下导体板约束呈水平横穿，但在走线两侧的开阔区，必须弯曲绕过导线上方闭合。</p>
+          <section class="modal-block">
+            <h3>2. 为什么磁力线是闭合环？(∇ · B = 0)</h3>
+            <p>根据高斯磁定律，自然界不存在磁单极子，磁力线必须处处闭合。在微带线正下方的介质核心区，磁力线横穿介质；在两侧开阔区，磁力线弯曲绕回导线上方闭合。</p>
           </section>
 
-          <section class="modal-section">
-            <h3>3. 为什么高频返回电流只“死死吸附在走线正下方”，而不是向周围漫延？</h3>
-            <p>这正是低频与高频的本质区别：</p>
-            <ul>
-              <li><strong>低频直流（DC）：</strong>电流走<strong>“电阻最小路径” ($\min R$)</strong>。由于地铜皮电阻均匀，直流电流会在整个地平面上大面积扇形散开。</li>
-              <li><strong>高频交流（RF / 高速）：</strong>感抗 $\omega L$ 远大于欧姆电阻 $R$，电流永远走<strong>“环路电感最小路径” ($\min \omega L$)</strong>。只有当返回电流死死吸附在信号线正下方时，信号电流与返回电流的物理间距最小，两者的反向磁通互相抵消最彻底，构成的回路面积最小、回路电感最小！</li>
-            </ul>
+          <section class="modal-block">
+            <h3>3. 为什么高频返回电流只死死吸附在导线下方？</h3>
+            <p>低频直流电流走<strong>电阻最小路径（min R）</strong>，在地平面大面积扩散；高频交流电流则受感抗主导，永远走<strong>环路电感最小路径（min ωL）</strong>。只有在地平面正下方聚集回流，回路面积才最小，信号电流与返回电流的磁通互相抵消最彻底。</p>
           </section>
 
-          <section class="modal-section">
-            <h3>4. 高速差分信号（Differential Pair）为什么具有优异抗噪与极低辐射？</h3>
-            <ul>
-              <li><strong>远场辐射抵消：</strong>差分对两根走线携带大小相等、极性相反的信号电流。在远场空间，两根线激发的大小相等、方向相反的磁场几乎完全相消 ($B_{net} \approx 0$)，极难向外辐射 EMI。</li>
-              <li><strong>优异共模抑制（CMRR）：</strong>外部空间噪声或地弹电位同时入侵两根并行的差分线时，在两根线上感应出的噪声电压是同极性的 ($\Delta V$)。在差分接收端执行相减运算：
-                $$(V_{sig} + \Delta V) - (-V_{sig} + \Delta V) = 2 V_{sig}$$
-                噪声被精确相消！
-              </li>
-              <li><strong>地平面依赖降低：</strong>紧密耦合的差分对，电场线大量在两根线之间自闭合，甚至在跨越地平面微小分割缝隙时，差分奇模能量依然能沿着两线间隙向前传输。</li>
-            </ul>
+          <section class="modal-block">
+            <h3>4. 差分对优异抗噪机理 (CMRR)</h3>
+            <p>差分对两线携带相反极性电荷，电场线大量在两线之间自闭合；在远场空间，两线激发的大小相等、方向相反的磁场几乎相互抵消（对外辐射极低）。当外部共模噪声入侵时，接收端相减运算 <code>(V+ − V−)</code> 将共模噪声瞬间抵消。</p>
           </section>
         </div>
       </div>
