@@ -1,30 +1,31 @@
 /* ==========================================================================
-   Electromagnetic Signal Simulation Lab - Clean Engineering Theme
-   Refined, Minimalist, Precision Instrumentation Interface
+   Electromagnetic Signal Simulation Lab - Warm Engineering Edition
+   Warm Tone Palette: Espresso, Warm Amber, Burnished Copper & Golden FR-4
    ========================================================================== */
 
 :root {
-  --bg-root: #0B0E14;
-  --bg-surface: #121721;
-  --bg-surface-elevated: #171E2B;
-  --bg-surface-hover: #1E2738;
-  --bg-input: #0E131C;
+  --bg-root: #13110F;
+  --bg-surface: #1B1714;
+  --bg-surface-elevated: #231E1A;
+  --bg-surface-hover: #2B2520;
+  --bg-input: #171310;
 
-  --border-subtle: #1E2736;
-  --border-medium: #2B384E;
-  --border-focus: #3B82F6;
+  --border-subtle: #2D2620;
+  --border-medium: #3E352C;
+  --border-focus: #D97706;
 
-  --text-main: #E2E8F0;
-  --text-muted: #94A3B8;
-  --text-dim: #64748B;
-  --text-bright: #FFFFFF;
+  --text-main: #F2E8DC;
+  --text-muted: #C4B5A3;
+  --text-dim: #8A7B6E;
+  --text-bright: #FFFDF9;
 
-  --accent-blue: #3B82F6;
-  --accent-cyan: #0EA5E9;
-  --accent-green: #10B981;
-  --accent-amber: #F59E0B;
-  --accent-purple: #8B5CF6;
-  --accent-red: #EF4444;
+  --accent-amber: #D97706;       /* Primary warm amber */
+  --accent-orange: #EA580C;      /* Sunset orange */
+  --accent-e-field: #FB923C;     /* Warm coral peach for E-field */
+  --accent-h-field: #A3E635;     /* Warm lime sage for H-field */
+  --accent-s-gold: #FBBF24;      /* Radiant gold for Poynting S */
+  --accent-return: #F43F5E;      /* Rose terracotta for return current */
+  --accent-electron: #38BDF8;    /* Soft sky blue for electrons */
 
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
@@ -87,8 +88,8 @@ body, html {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.5px;
-  background: #1E293B;
-  color: var(--accent-cyan);
+  background: #281F18;
+  color: var(--accent-amber);
   border: 1px solid var(--border-medium);
   padding: 2px 6px;
   border-radius: 4px;
@@ -101,7 +102,7 @@ body, html {
   letter-spacing: -0.2px;
 }
 
-/* Clean Segmented Mode Selector */
+/* Segmented Mode Selector */
 .mode-segmented-control {
   display: flex;
   background: var(--bg-root);
@@ -129,8 +130,9 @@ body, html {
 
 .segment-btn.active {
   background: var(--bg-surface-elevated);
-  color: #FFFFFF;
+  color: #FFFDF9;
   border: 1px solid var(--border-medium);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 }
 
 .header-right {
@@ -179,8 +181,8 @@ body, html {
 }
 
 .unit-btn.active {
-  background: var(--accent-blue);
-  color: #FFFFFF;
+  background: var(--accent-amber);
+  color: #FFFDF9;
 }
 
 .action-btn {
@@ -210,7 +212,7 @@ body, html {
   flex: 1;
   position: relative;
   overflow: hidden;
-  background: #090C12;
+  background: #12100E;
 }
 
 #canvas-container {
@@ -228,7 +230,7 @@ body, html {
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  background: rgba(18, 23, 33, 0.88);
+  background: rgba(27, 23, 20, 0.9);
   backdrop-filter: blur(12px);
   border: 1px solid var(--border-subtle);
   padding: 2px;
@@ -254,9 +256,9 @@ body, html {
 }
 
 .v-btn.active {
-  background: rgba(59, 130, 246, 0.15);
-  color: var(--accent-cyan);
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  background: rgba(217, 119, 6, 0.2);
+  color: var(--accent-amber);
+  border: 1px solid rgba(217, 119, 6, 0.4);
 }
 
 .v-btn.reset {
@@ -266,13 +268,13 @@ body, html {
 /* HUD Panels */
 .hud-panel {
   position: absolute;
-  background: rgba(18, 23, 33, 0.88);
+  background: rgba(27, 23, 20, 0.9);
   backdrop-filter: blur(14px);
   border: 1px solid var(--border-subtle);
   border-radius: 8px;
   padding: 12px;
   z-index: 20;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
@@ -333,7 +335,7 @@ body, html {
 }
 
 .check-row input[type="checkbox"] {
-  accent-color: var(--accent-blue);
+  accent-color: var(--accent-amber);
   cursor: pointer;
 }
 
@@ -344,11 +346,11 @@ body, html {
   flex-shrink: 0;
 }
 
-.color-dot.cyan { background: #0EA5E9; }
-.color-dot.green { background: #10B981; }
-.color-dot.amber { background: #F59E0B; }
-.color-dot.purple { background: #A855F7; }
-.color-dot.blue { background: #3B82F6; }
+.color-dot.coral { background: var(--accent-e-field); }
+.color-dot.sage { background: var(--accent-h-field); }
+.color-dot.amber { background: var(--accent-s-gold); }
+.color-dot.rose { background: var(--accent-return); }
+.color-dot.blue { background: var(--accent-electron); }
 
 .check-text {
   white-space: nowrap;
@@ -357,8 +359,8 @@ body, html {
 }
 
 .clean-note-box {
-  background: rgba(14, 19, 28, 0.7);
-  border-left: 2px solid var(--accent-cyan);
+  background: rgba(23, 19, 16, 0.7);
+  border-left: 2px solid var(--accent-amber);
   padding: 8px 10px;
   border-radius: 4px;
   font-size: 11px;
@@ -369,7 +371,7 @@ body, html {
 .note-tag {
   font-weight: 700;
   font-size: 10px;
-  color: var(--accent-cyan);
+  color: var(--accent-amber);
   margin-bottom: 3px;
   text-transform: uppercase;
 }
@@ -385,15 +387,15 @@ body, html {
   font-family: var(--font-mono);
   font-size: 9.5px;
   font-weight: 700;
-  color: var(--accent-green);
-  background: rgba(16, 185, 129, 0.15);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: var(--accent-amber);
+  background: rgba(217, 119, 6, 0.15);
+  border: 1px solid rgba(217, 119, 6, 0.35);
   padding: 1px 5px;
   border-radius: 3px;
 }
 
 #scopeCanvas {
-  background: #070A0F;
+  background: #0E0C0A;
   border: 1px solid var(--border-subtle);
   border-radius: 4px;
   width: 100%;
@@ -407,9 +409,9 @@ body, html {
   font-size: 10.5px;
 }
 
-.legend-chip.blue { color: #60A5FA; }
-.legend-chip.green { color: #34D399; }
-.legend-chip.red { color: #F87171; }
+.legend-chip.coral { color: var(--accent-e-field); }
+.legend-chip.gold { color: var(--accent-s-gold); }
+.legend-chip.rose { color: var(--accent-return); }
 
 .diff-noise-control {
   margin-top: 8px;
@@ -437,9 +439,9 @@ body, html {
 
 .flat-action-btn {
   width: 100%;
-  background: rgba(239, 68, 68, 0.12);
-  border: 1px solid rgba(239, 68, 68, 0.35);
-  color: #FCA5A5;
+  background: rgba(244, 63, 94, 0.15);
+  border: 1px solid rgba(244, 63, 94, 0.35);
+  color: #FDA4AF;
   padding: 5px;
   border-radius: 4px;
   font-size: 11px;
@@ -449,8 +451,8 @@ body, html {
 }
 
 .flat-action-btn.active {
-  background: #DC2626;
-  color: #FFFFFF;
+  background: #E11D48;
+  color: #FFFDF9;
 }
 
 .sub-hint {
@@ -480,7 +482,7 @@ body, html {
 }
 
 #crossCanvas {
-  background: #070A0F;
+  background: #0E0C0A;
   border: 1px solid var(--border-subtle);
   border-radius: 4px;
   width: 100%;
@@ -565,7 +567,7 @@ body, html {
   gap: 8px;
 }
 
-/* Minimal Layer Toggles */
+/* Layer Toggles */
 .toggle-bar {
   display: flex;
   align-items: center;
@@ -590,21 +592,21 @@ body, html {
 }
 
 .t-btn.active {
-  background: #1E3A8A;
-  color: #BFDBFE;
-  border-color: #3B82F6;
+  background: #3B2A1D;
+  color: #FDE68A;
+  border-color: #D97706;
 }
 
 .t-btn#pill-trans-dielectric.active {
-  background: #064E3B;
-  color: #A7F3D0;
-  border-color: #10B981;
+  background: #302C18;
+  color: #E2E8F0;
+  border-color: #B45309;
 }
 
 .t-btn#pill-pause.active {
-  background: #78350F;
-  color: #FDE68A;
-  border-color: #D97706;
+  background: #4C1D1B;
+  color: #FECDD3;
+  border-color: #E11D48;
 }
 
 /* Parameters Grid with Manual Inputs */
@@ -702,9 +704,9 @@ input[type="range"]::-webkit-slider-thumb {
   width: 13px;
   height: 13px;
   border-radius: 50%;
-  background: var(--accent-cyan);
+  background: var(--accent-amber);
   cursor: pointer;
-  border: 1px solid #FFFFFF;
+  border: 1px solid #FFFDF9;
 }
 
 .flat-select {
@@ -773,7 +775,7 @@ input[type="range"]::-webkit-slider-thumb {
 
 .modal-block h3 {
   font-size: 13.5px;
-  color: var(--accent-cyan);
+  color: var(--accent-amber);
   margin-bottom: 6px;
 }
 
@@ -785,6 +787,6 @@ input[type="range"]::-webkit-slider-thumb {
   text-align: center;
   font-family: var(--font-mono);
   font-size: 14px;
-  color: var(--accent-cyan);
+  color: var(--accent-amber);
   margin: 8px 0;
 }

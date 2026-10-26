@@ -129,8 +129,8 @@
     const height = container.clientHeight;
 
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x090c12);
-    scene.fog = new THREE.FogExp2(0x090c12, 0.015);
+    scene.background = new THREE.Color(0x13110f);
+    scene.fog = new THREE.FogExp2(0x13110f, 0.015);
 
     camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
     applyCameraPreset('isometric');
@@ -149,21 +149,21 @@
     controls.minDistance = 8;
     controls.maxDistance = 80;
 
-    // Subtle, clean lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.75);
+    // Warm ambient and sun lighting
+    const ambientLight = new THREE.AmbientLight(0xffedd5, 0.85);
     scene.add(ambientLight);
 
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.85);
+    const dirLight1 = new THREE.DirectionalLight(0xfff7ed, 0.9);
     dirLight1.position.set(20, 30, 20);
     dirLight1.castShadow = true;
     scene.add(dirLight1);
 
-    const dirLight2 = new THREE.DirectionalLight(0x38bdf8, 0.35);
+    const dirLight2 = new THREE.DirectionalLight(0xf59e0b, 0.35);
     dirLight2.position.set(-20, 15, -20);
     scene.add(dirLight2);
 
-    // Engineering grid floor
-    const gridHelper = new THREE.GridHelper(50, 50, 0x1e2736, 0x111622);
+    // Warm engineering grid floor
+    const gridHelper = new THREE.GridHelper(50, 50, 0x2e2721, 0x1a1612);
     gridHelper.position.y = -0.05;
     scene.add(gridHelper);
 
@@ -442,15 +442,15 @@
     const s3d = state.s * SCALE_FACTOR;
     const traceThick = 0.22;
 
-    // 1. Dielectric Substrate (FR-4)
+    // 1. Dielectric Substrate (FR-4 - Warm natural golden amber resin)
     const dielectricGeo = new THREE.BoxGeometry(BOARD_WIDTH, h3d, BOARD_LENGTH);
     dielectricMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0x10b981,
+      color: 0xca8a04,
       transparent: true,
-      opacity: state.transDielectric ? 0.22 : 0.85,
-      roughness: 0.2,
+      opacity: state.transDielectric ? 0.24 : 0.85,
+      roughness: 0.22,
       metalness: 0.05,
-      transmission: state.transDielectric ? 0.8 : 0.1,
+      transmission: state.transDielectric ? 0.78 : 0.1,
       ior: 1.5,
       depthWrite: !state.transDielectric
     });
@@ -459,27 +459,27 @@
     dielectricMesh.receiveShadow = true;
     boardGroup.add(dielectricMesh);
 
-    // Subtle edge outline
+    // Warm amber edge outline
     const edges = new THREE.EdgesGeometry(dielectricGeo);
-    const lineMat = new THREE.LineBasicMaterial({ color: 0x059669, transparent: true, opacity: 0.35 });
+    const lineMat = new THREE.LineBasicMaterial({ color: 0x92400e, transparent: true, opacity: 0.35 });
     const wireframe = new THREE.LineSegments(edges, lineMat);
     dielectricMesh.add(wireframe);
 
-    // 2. Ground Plane (GND at bottom, Y = 0)
+    // 2. Ground Plane (GND at bottom, Y = 0 - Warm dark bronze)
     const groundGeo = new THREE.BoxGeometry(BOARD_WIDTH, 0.12, BOARD_LENGTH);
     groundMaterial = new THREE.MeshStandardMaterial({
-      color: 0x334155,
-      metalness: 0.85,
-      roughness: 0.35
+      color: 0x3d332a,
+      metalness: 0.82,
+      roughness: 0.38
     });
     groundMesh = new THREE.Mesh(groundGeo, groundMaterial);
     groundMesh.position.set(0, -0.06, 0);
     groundMesh.receiveShadow = true;
     boardGroup.add(groundMesh);
 
-    // 3. Copper Signal Trace(s)
+    // 3. Copper Signal Trace(s) - Warm burnished copper
     copperMaterial = new THREE.MeshStandardMaterial({
-      color: 0xd97706,
+      color: 0xe28743,
       metalness: 0.85,
       roughness: 0.22
     });
@@ -489,7 +489,7 @@
 
       // Left trace (TX+)
       traceMesh1 = new THREE.Mesh(traceGeo, copperMaterial.clone());
-      traceMesh1.material.color.setHex(0xe07a5f);
+      traceMesh1.material.color.setHex(0xe28743);
       const x1 = -(s3d / 2 + w3d / 2);
       traceMesh1.position.set(x1, h3d + traceThick / 2, 0);
       traceMesh1.castShadow = true;
@@ -532,16 +532,16 @@
 
   function buildSingleHighFields(h3d, w3d, zCount, zStep) {
     const eLinesMat = new THREE.LineBasicMaterial({
-      color: 0x0ea5e9,
+      color: 0xfb923c, // Warm coral peach E-field
       transparent: true,
-      opacity: 0.65,
+      opacity: 0.7,
       blending: THREE.AdditiveBlending
     });
 
     const hLinesMat = new THREE.LineBasicMaterial({
-      color: 0x10b981,
+      color: 0xa3e635, // Warm lime sage H-field
       transparent: true,
-      opacity: 0.7,
+      opacity: 0.72,
       blending: THREE.AdditiveBlending
     });
 
@@ -623,16 +623,16 @@
 
   function buildDifferentialFields(h3d, w3d, s3d, zCount, zStep) {
     const eLinesMat = new THREE.LineBasicMaterial({
-      color: 0x0ea5e9,
+      color: 0xfb923c, // Warm coral peach E-field
       transparent: true,
-      opacity: 0.65,
+      opacity: 0.7,
       blending: THREE.AdditiveBlending
     });
 
     const hLinesMat = new THREE.LineBasicMaterial({
-      color: 0x10b981,
+      color: 0xa3e635, // Warm lime sage H-field
       transparent: true,
-      opacity: 0.7,
+      opacity: 0.72,
       blending: THREE.AdditiveBlending
     });
 
@@ -888,9 +888,9 @@
       const mat = new THREE.LineSegments(
         geo,
         new THREE.LineBasicMaterial({
-          color: 0xa855f7,
+          color: 0xf43f5e,
           transparent: true,
-          opacity: 0.55
+          opacity: 0.6
         })
       );
       mat.visible = state.showReturnCurrent;
@@ -914,9 +914,9 @@
       const mat = new THREE.LineSegments(
         geo,
         new THREE.LineBasicMaterial({
-          color: 0xc084fc,
+          color: 0xf43f5e,
           transparent: true,
-          opacity: 0.8,
+          opacity: 0.82,
           blending: THREE.AdditiveBlending
         })
       );
@@ -946,9 +946,9 @@
       const mat = new THREE.LineSegments(
         geo,
         new THREE.LineBasicMaterial({
-          color: 0xc084fc,
+          color: 0xf43f5e,
           transparent: true,
-          opacity: 0.7,
+          opacity: 0.72,
           blending: THREE.AdditiveBlending
         })
       );
@@ -1063,11 +1063,11 @@
     const w = scopeCanvas.width;
     const h = scopeCanvas.height;
 
-    scopeCtx.fillStyle = '#070a0f';
+    scopeCtx.fillStyle = '#0e0c0a';
     scopeCtx.fillRect(0, 0, w, h);
 
-    // Grid lines
-    scopeCtx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
+    // Warm sepia reticle lines
+    scopeCtx.strokeStyle = 'rgba(245, 158, 11, 0.08)';
     scopeCtx.lineWidth = 1;
     scopeCtx.setLineDash([2, 4]);
 
@@ -1086,7 +1086,7 @@
     scopeCtx.setLineDash([]);
 
     const cy = h / 2;
-    scopeCtx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+    scopeCtx.strokeStyle = 'rgba(245, 158, 11, 0.16)';
     scopeCtx.beginPath();
     scopeCtx.moveTo(0, cy);
     scopeCtx.lineTo(w, cy);
@@ -1097,9 +1097,9 @@
     if (state.mode === 'differential') {
       const noise = state.isNoiseActive ? state.noiseAmp : 0;
 
-      // TX+ (Signal + Noise)
-      scopeCtx.strokeStyle = '#60a5fa';
-      scopeCtx.lineWidth = 1.2;
+      // TX+ (Signal + Noise) - Warm coral peach
+      scopeCtx.strokeStyle = '#fb923c';
+      scopeCtx.lineWidth = 1.3;
       scopeCtx.beginPath();
       for (let x = 0; x < w; x++) {
         const phi = t - (x / w) * 6;
@@ -1112,9 +1112,9 @@
       }
       scopeCtx.stroke();
 
-      // TX- (Inverted Signal + Identical Noise)
-      scopeCtx.strokeStyle = '#f87171';
-      scopeCtx.lineWidth = 1.2;
+      // TX- (Inverted Signal + Identical Noise) - Warm rose
+      scopeCtx.strokeStyle = '#f43f5e';
+      scopeCtx.lineWidth = 1.3;
       scopeCtx.beginPath();
       for (let x = 0; x < w; x++) {
         const phi = t - (x / w) * 6;
@@ -1127,8 +1127,8 @@
       }
       scopeCtx.stroke();
 
-      // Diff Out = (TX+ - TX-) / 2
-      scopeCtx.strokeStyle = '#34d399';
+      // Diff Out = (TX+ - TX-) / 2 - Radiant warm gold
+      scopeCtx.strokeStyle = '#fbbf24';
       scopeCtx.lineWidth = 2.0;
       scopeCtx.beginPath();
       for (let x = 0; x < w; x++) {
@@ -1141,9 +1141,9 @@
       scopeCtx.stroke();
 
     } else {
-      // Driver signal
-      scopeCtx.strokeStyle = '#60a5fa';
-      scopeCtx.lineWidth = 1.2;
+      // Driver signal - Warm coral peach
+      scopeCtx.strokeStyle = '#fb923c';
+      scopeCtx.lineWidth = 1.3;
       scopeCtx.beginPath();
       for (let x = 0; x < w; x++) {
         const phi = t - (x / w) * 6;
@@ -1156,8 +1156,8 @@
 
       const phaseDelay = state.mode === 'single-high' ? 1.8 : 0.08;
 
-      // Receiver signal
-      scopeCtx.strokeStyle = '#34d399';
+      // Receiver signal - Radiant warm gold
+      scopeCtx.strokeStyle = '#fbbf24';
       scopeCtx.lineWidth = 1.8;
       scopeCtx.beginPath();
       for (let x = 0; x < w; x++) {
@@ -1178,7 +1178,7 @@
     const w = crossCanvas.width;
     const h = crossCanvas.height;
 
-    crossCtx.fillStyle = '#070a0f';
+    crossCtx.fillStyle = '#0e0c0a';
     crossCtx.fillRect(0, 0, w, h);
 
     const centerX = w / 2;
@@ -1188,17 +1188,17 @@
     const traceW = Math.min(90, state.w * 24);
     const traceH = 8;
 
-    // Substrate
-    crossCtx.fillStyle = 'rgba(16, 185, 129, 0.16)';
+    // Substrate - Natural golden amber FR-4
+    crossCtx.fillStyle = 'rgba(202, 138, 4, 0.22)';
     crossCtx.fillRect(20, traceY, w - 40, subH);
-    crossCtx.strokeStyle = '#10b981';
+    crossCtx.strokeStyle = '#ca8a04';
     crossCtx.lineWidth = 1;
     crossCtx.strokeRect(20, traceY, w - 40, subH);
 
-    // Ground Plane
-    crossCtx.fillStyle = '#334155';
+    // Ground Plane - Warm bronze
+    crossCtx.fillStyle = '#4a3e35';
     crossCtx.fillRect(15, groundY, w - 30, 6);
-    crossCtx.fillStyle = '#64748b';
+    crossCtx.fillStyle = '#a89887';
     crossCtx.font = '10px monospace';
     crossCtx.fillText('GND 参考地平面', 22, groundY + 18);
 
@@ -1207,7 +1207,7 @@
       const x1 = centerX - spacing / 2 - traceW;
       const x2 = centerX + spacing / 2;
 
-      crossCtx.fillStyle = '#e07a5f';
+      crossCtx.fillStyle = '#e28743';
       crossCtx.fillRect(x1, traceY - traceH, traceW, traceH);
       crossCtx.fillStyle = '#fff';
       crossCtx.font = '9.5px sans-serif';
@@ -1217,7 +1217,7 @@
       crossCtx.fillRect(x2, traceY - traceH, traceW, traceH);
       crossCtx.fillText('Line (-)', x2 + 4, traceY - traceH - 3);
 
-      crossCtx.strokeStyle = '#0ea5e9';
+      crossCtx.strokeStyle = '#fb923c';
       crossCtx.lineWidth = 1.2;
       for (let y = traceY - traceH / 2; y <= traceY + subH * 0.4; y += 10) {
         crossCtx.beginPath();
@@ -1227,13 +1227,13 @@
       }
     } else {
       const xTrace = centerX - traceW / 2;
-      crossCtx.fillStyle = '#d97706';
+      crossCtx.fillStyle = '#e28743';
       crossCtx.fillRect(xTrace, traceY - traceH, traceW, traceH);
       crossCtx.fillStyle = '#fff';
       crossCtx.font = '9.5px sans-serif';
       crossCtx.fillText('信号铜线', xTrace + traceW / 2 - 16, traceY - traceH - 3);
 
-      crossCtx.strokeStyle = '#0ea5e9';
+      crossCtx.strokeStyle = '#fb923c';
       crossCtx.lineWidth = 1.0;
       for (let x = xTrace + 6; x <= xTrace + traceW - 6; x += 10) {
         crossCtx.beginPath();
@@ -1242,7 +1242,7 @@
         crossCtx.stroke();
       }
 
-      crossCtx.strokeStyle = '#10b981';
+      crossCtx.strokeStyle = '#a3e635';
       crossCtx.lineWidth = 1.2;
       crossCtx.beginPath();
       crossCtx.ellipse(centerX, traceY + subH / 2, traceW / 2 + 16, subH / 2 + 12, 0, 0, Math.PI * 2);
@@ -1562,9 +1562,9 @@
       pillElectrons.style.display = 'none';
 
       scopeLegend.innerHTML = `
-        <span class="legend-chip blue">Line (+) 带噪</span>
-        <span class="legend-chip red">Line (-) 带噪</span>
-        <span class="legend-chip green">差分相减 V_diff (纯净)</span>
+        <span class="legend-chip coral">Line (+) 带噪</span>
+        <span class="legend-chip rose">Line (-) 带噪</span>
+        <span class="legend-chip gold">差分相减 V_diff (纯净)</span>
       `;
     } else if (newMode === 'single-low') {
       groupS.style.display = 'none';
@@ -1580,8 +1580,8 @@
       pillElectrons.style.display = 'inline-block';
 
       scopeLegend.innerHTML = `
-        <span class="legend-chip blue">输入电压 V_in</span>
-        <span class="legend-chip green">负载接收 V_out (瞬间同相)</span>
+        <span class="legend-chip coral">输入电压 V_in</span>
+        <span class="legend-chip gold">负载接收 V_out (瞬间同相)</span>
       `;
     } else {
       groupS.style.display = 'none';
@@ -1597,8 +1597,8 @@
       pillElectrons.style.display = 'none';
 
       scopeLegend.innerHTML = `
-        <span class="legend-chip blue">驱动端 V_in</span>
-        <span class="legend-chip green">远端接收 V_out (行波时延)</span>
+        <span class="legend-chip coral">驱动端 V_in</span>
+        <span class="legend-chip gold">远端接收 V_out (行波时延)</span>
       `;
     }
 
