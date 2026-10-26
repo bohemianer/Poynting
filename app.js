@@ -119,6 +119,11 @@
       setMode('single-high');
     }
 
+    const crossParam = urlParams.get('cross');
+    if (crossParam) {
+      document.getElementById('cross-section-panel').style.display = 'block';
+    }
+
     // Automated headless video recording hook (?record=name)
     const recordParam = urlParams.get('record');
     if (recordParam) {
