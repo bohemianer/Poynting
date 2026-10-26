@@ -1,43 +1,32 @@
 /* ==========================================================================
-   Electromagnetic Signal Simulation Lab - Apple & Smartisan Skeuomorphic Clean
-   Warm Cream / Ivory Canvas, Tactile Physical Switches, Precision Craftsmanship
+   Electromagnetic Signal Simulation Lab - Apple Design System (Flat Clean)
+   Minimalist, Pure, Lightweight, Airy Studio Aesthetic
    ========================================================================== */
 
 :root {
-  /* Warm Ivory / Linen-Paper & Aluminum Palette */
-  --bg-app: #F6F4EF;
-  --bg-header: #EFEBE3;
-  --bg-deck: #EFEBE3;
-  --bg-card: #FAF8F5;
-  --bg-card-raised: #FFFFFF;
-  --bg-well: #E5DFD4;
-  --bg-input: #FFFFFF;
+  /* Apple System Color Palette */
+  --apple-bg: #F5F5F7;
+  --apple-surface: rgba(255, 255, 255, 0.86);
+  --apple-surface-card: #FFFFFF;
+  --apple-surface-subtle: #F2F2F7;
+  --apple-border: rgba(0, 0, 0, 0.08);
+  --apple-border-subtle: rgba(0, 0, 0, 0.04);
 
-  --border-hairline: #E2DBD0;
-  --border-strong: #CFC5B6;
-  --border-highlight: rgba(255, 255, 255, 0.9);
+  --apple-text-primary: #1D1D1F;
+  --apple-text-secondary: #86868B;
+  --apple-text-tertiary: #A1A1A6;
 
-  --shadow-subtle: 0 1px 3px rgba(60, 45, 30, 0.06), 0 1px 1px rgba(0, 0, 0, 0.04);
-  --shadow-raised: 0 3px 10px rgba(60, 45, 30, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
-  --shadow-floating: 0 10px 28px rgba(50, 35, 20, 0.12), 0 2px 6px rgba(0, 0, 0, 0.05);
-  --shadow-inset: inset 0 1px 3px rgba(60, 45, 30, 0.15), 0 1px 0 rgba(255, 255, 255, 0.85);
+  /* Apple System Semantic Accents */
+  --apple-blue: #0071E3;
+  --apple-blue-hover: #0077ED;
+  --apple-green: #34C759;
+  --apple-orange: #FF9500;
+  --apple-red: #FF3B30;
+  --apple-purple: #5856D6;
+  --apple-indigo: #5E5CE6;
 
-  --text-primary: #1F1914;
-  --text-secondary: #5C4F42;
-  --text-muted: #8A7B6D;
-  --text-dim: #A89B8D;
-
-  /* Tactile Physical Accent Colors */
-  --accent-amber: #D96B14;
-  --accent-amber-hover: #BF5B0C;
-  --accent-e-field: #C84B18;
-  --accent-h-field: #2E7D32;
-  --accent-s-gold: #D97706;
-  --accent-return: #BE123C;
-  --accent-electron: #2563EB;
-
-  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
-  --font-mono: "SF Mono", Menlo, Consolas, Monaco, "Liberation Mono", monospace;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: "SF Mono", Menlo, Monaco, Consolas, monospace;
 }
 
 * {
@@ -51,8 +40,8 @@ body, html {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background-color: var(--bg-app);
-  color: var(--text-primary);
+  background-color: var(--apple-bg);
+  color: var(--apple-text-primary);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
@@ -63,17 +52,17 @@ body, html {
   width: 100vw;
   height: 100vh;
   position: relative;
-  background: var(--bg-app);
+  background: var(--apple-bg);
 }
 
 /* ==========================================================================
-   Header: Apple Precision & Smartisan Brushed Texture
+   Header: Pure Apple Navigation Bar
    ========================================================================== */
 .app-header {
   height: 52px;
-  background: linear-gradient(180deg, #F4F0E8 0%, #ECE6DC 100%);
-  border-bottom: 1px solid var(--border-strong);
-  box-shadow: 0 1px 4px rgba(60, 45, 30, 0.06);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--apple-border);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -91,62 +80,57 @@ body, html {
 .brand-title {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 8px;
 }
 
 .brand-badge {
   font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.6px;
-  background: linear-gradient(180deg, #FFFFFF 0%, #EDE6DC 100%);
-  color: #8C440B;
-  border: 1px solid #D6CCBD;
-  padding: 2px 7px;
-  border-radius: 4px;
-  box-shadow: 0 1px 2px rgba(60, 45, 30, 0.08);
+  font-size: 10.5px;
+  font-weight: 600;
+  background: rgba(0, 113, 227, 0.08);
+  color: var(--apple-blue);
+  padding: 3px 7px;
+  border-radius: 6px;
+  letter-spacing: 0.3px;
 }
 
 .main-title {
   font-size: 14.5px;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--apple-text-primary);
   letter-spacing: -0.2px;
 }
 
-/* Smartisan Classic Tactile Segmented Control */
+/* Apple Native Segmented Control */
 .mode-segmented-control {
   display: flex;
-  background: #E3DDD1;
-  border: 1px solid #D0C6B5;
-  box-shadow: inset 0 1px 2px rgba(60, 45, 30, 0.15), 0 1px 0 rgba(255, 255, 255, 0.9);
-  padding: 3px;
-  border-radius: 8px;
+  background: rgba(118, 118, 128, 0.12);
+  padding: 2px;
+  border-radius: 9px;
   gap: 2px;
 }
 
 .segment-btn {
   background: transparent;
   border: none;
-  color: var(--text-secondary);
-  font-size: 12px;
+  color: var(--apple-text-secondary);
+  font-size: 12.5px;
   font-weight: 500;
-  padding: 5px 15px;
-  border-radius: 6px;
+  padding: 5px 14px;
+  border-radius: 7px;
   cursor: pointer;
-  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .segment-btn:hover {
-  color: var(--text-primary);
+  color: var(--apple-text-primary);
 }
 
 .segment-btn.active {
-  background: linear-gradient(180deg, #FFFFFF 0%, #F5F1E9 100%);
-  color: #1F1914;
+  background: #FFFFFF;
+  color: var(--apple-text-primary);
   font-weight: 600;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 2px 5px rgba(60, 45, 30, 0.12), 0 1px 1px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .header-right {
@@ -155,22 +139,20 @@ body, html {
   gap: 10px;
 }
 
-/* Tactile Unit Switcher mm / mil */
+/* Apple Flat Unit Switcher */
 .unit-switcher {
   display: flex;
   align-items: center;
   gap: 6px;
-  background: #E3DDD1;
-  border: 1px solid #D0C6B5;
-  box-shadow: inset 0 1px 2px rgba(60, 45, 30, 0.15), 0 1px 0 rgba(255, 255, 255, 0.9);
+  background: rgba(118, 118, 128, 0.1);
   padding: 2px 4px;
-  border-radius: 6px;
+  border-radius: 8px;
 }
 
 .unit-label {
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 500;
-  color: var(--text-muted);
+  color: var(--apple-text-secondary);
   padding-left: 4px;
 }
 
@@ -183,34 +165,34 @@ body, html {
   background: transparent;
   border: none;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 600;
-  color: var(--text-secondary);
+  color: var(--apple-text-secondary);
   padding: 3px 8px;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .unit-btn:hover {
-  color: var(--text-primary);
+  color: var(--apple-text-primary);
 }
 
 .unit-btn.active {
-  background: linear-gradient(180deg, #D96B14 0%, #BF5707 100%);
-  color: #FFFFFF;
-  box-shadow: 0 1px 3px rgba(191, 87, 7, 0.35);
+  background: #FFFFFF;
+  color: var(--apple-blue);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
+/* Apple Clean Action Buttons */
 .action-btn {
-  background: linear-gradient(180deg, #FAF7F2 0%, #EDE6DC 100%);
-  border: 1px solid #D0C6B5;
-  box-shadow: 0 1px 2px rgba(60, 45, 30, 0.08), inset 0 1px 0 #FFF;
-  color: var(--text-secondary);
-  font-size: 12px;
+  background: rgba(118, 118, 128, 0.08);
+  border: none;
+  color: var(--apple-text-primary);
+  font-size: 12.5px;
   font-weight: 500;
-  padding: 5px 12px;
-  border-radius: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -219,24 +201,17 @@ body, html {
 }
 
 .action-btn:hover {
-  background: linear-gradient(180deg, #FFFFFF 0%, #F2ECE2 100%);
-  color: var(--text-primary);
-  border-color: #BDB29F;
-}
-
-.action-btn:active {
-  background: #E5DFD4;
-  box-shadow: inset 0 1px 2px rgba(60, 45, 30, 0.15);
+  background: rgba(118, 118, 128, 0.15);
 }
 
 /* ==========================================================================
-   Main 3D Canvas Stage (Studio Keynote Turntable Floor)
+   Main 3D Stage (Apple Keynote Pristine Studio Canvas)
    ========================================================================== */
 .main-stage {
   flex: 1;
   position: relative;
   overflow: hidden;
-  background: #ECE7DF;
+  background: #FBFBFD;
 }
 
 #canvas-container {
@@ -247,62 +222,59 @@ body, html {
   left: 0;
 }
 
-/* Camera View Presets Bar */
+/* Apple Floating Camera Bar */
 .view-preset-strip {
   position: absolute;
   top: 14px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  background: rgba(245, 241, 233, 0.94);
-  backdrop-filter: blur(12px);
-  border: 1px solid #D5CCBE;
-  box-shadow: 0 3px 12px rgba(60, 45, 30, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: saturate(180%) blur(20px);
+  border: 1px solid var(--apple-border);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
   padding: 3px;
-  border-radius: 8px;
-  gap: 3px;
+  border-radius: 20px;
+  gap: 2px;
   z-index: 20;
 }
 
 .v-btn {
   background: transparent;
   border: none;
-  color: var(--text-secondary);
-  font-size: 11.5px;
+  color: var(--apple-text-secondary);
+  font-size: 12px;
   font-weight: 500;
-  padding: 5px 11px;
-  border-radius: 5px;
+  padding: 5px 12px;
+  border-radius: 16px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .v-btn:hover {
-  color: var(--text-primary);
-  background: rgba(0, 0, 0, 0.04);
+  color: var(--apple-text-primary);
 }
 
 .v-btn.active {
-  background: #FFFFFF;
-  color: var(--accent-amber);
+  background: var(--apple-blue);
+  color: #FFFFFF;
   font-weight: 600;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 1px 3px rgba(60, 45, 30, 0.1);
 }
 
 .v-btn.reset {
-  color: var(--text-muted);
+  color: var(--apple-text-tertiary);
 }
 
-/* HUD Tactile Paper Panels */
+/* Floating Glass Cards */
 .hud-panel {
   position: absolute;
-  background: rgba(252, 250, 247, 0.95);
-  backdrop-filter: blur(16px);
-  border: 1px solid #DCD4C7;
-  border-radius: 10px;
-  padding: 13px;
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: saturate(180%) blur(24px);
+  border: 1px solid var(--apple-border);
+  border-radius: 14px;
+  padding: 14px;
   z-index: 20;
-  box-shadow: var(--shadow-floating);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.02);
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
@@ -310,37 +282,35 @@ body, html {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 9px;
-  border-bottom: 1px solid #ECE5D8;
-  padding-bottom: 6px;
+  margin-bottom: 10px;
 }
 
 .hud-heading {
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--apple-text-primary);
   letter-spacing: -0.2px;
 }
 
 .collapse-toggle {
-  background: #EAE4D8;
-  border: 1px solid #D6CCBC;
-  color: var(--text-secondary);
+  background: rgba(0, 0, 0, 0.04);
+  border: none;
+  color: var(--apple-text-secondary);
   font-size: 12px;
   font-weight: bold;
   cursor: pointer;
-  width: 18px;
-  height: 18px;
-  border-radius: 4px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 1px 2px rgba(60, 45, 30, 0.06);
+  transition: background 0.15s ease;
 }
 
 .collapse-toggle:hover {
-  background: #DFD7C9;
-  color: var(--text-primary);
+  background: rgba(0, 0, 0, 0.08);
+  color: var(--apple-text-primary);
 }
 
 .left-hud {
@@ -360,38 +330,37 @@ body, html {
   display: flex;
   align-items: center;
   gap: 9px;
-  font-size: 11.5px;
-  font-weight: 500;
-  color: var(--text-secondary);
-  padding: 4px 6px;
-  border-radius: 5px;
+  font-size: 12px;
+  color: var(--apple-text-primary);
+  padding: 5px 8px;
+  border-radius: 7px;
   cursor: pointer;
   transition: background 0.15s ease;
 }
 
 .check-row:hover {
   background: rgba(0, 0, 0, 0.04);
-  color: var(--text-primary);
 }
 
 .check-row input[type="checkbox"] {
-  accent-color: var(--accent-amber);
+  accent-color: var(--apple-blue);
   cursor: pointer;
+  width: 14px;
+  height: 14px;
 }
 
 .color-dot {
   width: 8px;
   height: 8px;
-  border-radius: 2px;
+  border-radius: 50%;
   flex-shrink: 0;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
 }
 
-.color-dot.coral { background: var(--accent-e-field); }
-.color-dot.sage { background: var(--accent-h-field); }
-.color-dot.amber { background: var(--accent-s-gold); }
-.color-dot.rose { background: var(--accent-return); }
-.color-dot.blue { background: var(--accent-electron); }
+.color-dot.coral { background: var(--apple-blue); }
+.color-dot.sage { background: var(--apple-green); }
+.color-dot.amber { background: var(--apple-orange); }
+.color-dot.rose { background: var(--apple-purple); }
+.color-dot.blue { background: #0A84FF; }
 
 .check-text {
   white-space: nowrap;
@@ -400,79 +369,73 @@ body, html {
 }
 
 .clean-note-box {
-  background: #F3EFE7;
-  border: 1px solid #DFD7CA;
-  border-left: 3px solid var(--accent-amber);
-  padding: 8px 10px;
-  border-radius: 5px;
-  font-size: 11px;
-  color: var(--text-secondary);
+  background: rgba(0, 113, 227, 0.04);
+  border: 1px solid rgba(0, 113, 227, 0.12);
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 11.5px;
+  color: var(--apple-text-secondary);
   line-height: 1.5;
 }
 
 .note-tag {
   font-weight: 700;
-  font-size: 10px;
-  color: var(--accent-amber);
+  font-size: 10.5px;
+  color: var(--apple-blue);
   margin-bottom: 3px;
   text-transform: uppercase;
 }
 
-/* Right HUD - Benchtop Oscilloscope Bezel */
+/* Right HUD - Apple Style Oscilloscope Card */
 .right-hud {
   top: 14px;
   right: 16px;
-  width: 304px;
-  background: linear-gradient(180deg, #F9F6F0 0%, #EFEBE1 100%);
-  border: 1px solid #D6CCBD;
+  width: 310px;
 }
 
 .scope-indicator {
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 9.5px;
   font-weight: 700;
-  color: #8C440B;
-  background: #F0E6D8;
-  border: 1px solid #D9CBBA;
-  padding: 1px 5px;
-  border-radius: 3px;
+  color: var(--apple-green);
+  background: rgba(52, 199, 89, 0.12);
+  padding: 2px 6px;
+  border-radius: 4px;
 }
 
-/* CRT / Benchtop Instrument Recessed Glass */
 #scopeCanvas {
-  background: #191613;
-  border: 1px solid #40362C;
-  border-radius: 6px;
+  background: #FFFFFF;
+  border: 1px solid var(--apple-border);
+  border-radius: 10px;
   width: 100%;
   display: block;
-  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5);
 }
 
 .scope-legend-row {
   display: flex;
   justify-content: space-around;
-  margin-top: 7px;
-  font-size: 10.5px;
-  font-weight: 600;
+  margin-top: 8px;
+  font-size: 11px;
+  font-weight: 500;
 }
 
-.legend-chip.coral { color: var(--accent-e-field); }
-.legend-chip.gold { color: var(--accent-s-gold); }
-.legend-chip.rose { color: var(--accent-return); }
+.legend-chip.coral { color: var(--apple-blue); }
+.legend-chip.gold { color: var(--apple-green); }
+.legend-chip.rose { color: var(--apple-red); }
 
 .diff-noise-control {
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid #DED7CA;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--apple-border);
 }
 
 .noise-slider-line {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 11px;
-  color: var(--text-secondary);
-  margin-bottom: 6px;
+  font-size: 11.5px;
+  color: var(--apple-text-secondary);
+  margin-bottom: 8px;
 }
 
 .noise-slider-line input[type="range"] {
@@ -481,39 +444,36 @@ body, html {
 
 .mono-readout {
   font-family: var(--font-mono);
-  color: var(--text-primary);
+  color: var(--apple-text-primary);
   font-weight: 600;
 }
 
 .flat-action-btn {
   width: 100%;
-  background: linear-gradient(180deg, #FFF5F5 0%, #FEE2E2 100%);
-  border: 1px solid #FECACA;
-  color: #B91C1C;
-  box-shadow: 0 1px 2px rgba(185, 28, 28, 0.08);
-  padding: 5px;
-  border-radius: 5px;
-  font-size: 11px;
+  background: rgba(255, 59, 48, 0.08);
+  border: none;
+  color: var(--apple-red);
+  padding: 6px;
+  border-radius: 8px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .flat-action-btn:hover {
-  background: #FEE2E2;
+  background: rgba(255, 59, 48, 0.15);
 }
 
 .flat-action-btn.active {
-  background: linear-gradient(180deg, #DC2626 0%, #B91C1C 100%);
+  background: var(--apple-red);
   color: #FFFFFF;
-  border-color: #991B1B;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25);
 }
 
 .sub-hint {
-  font-size: 10px;
-  color: var(--text-muted);
-  margin-top: 5px;
+  font-size: 10.5px;
+  color: var(--apple-text-secondary);
+  margin-top: 6px;
   line-height: 1.4;
 }
 
@@ -521,79 +481,78 @@ body, html {
 .cross-panel {
   bottom: 215px;
   right: 16px;
-  width: 344px;
+  width: 340px;
 }
 
 .close-x {
   background: transparent;
   border: none;
-  color: var(--text-muted);
-  font-size: 16px;
+  color: var(--apple-text-secondary);
+  font-size: 18px;
   cursor: pointer;
 }
 
 .close-x:hover {
-  color: var(--text-primary);
+  color: var(--apple-text-primary);
 }
 
 #crossCanvas {
-  background: #191613;
-  border: 1px solid #40362C;
-  border-radius: 6px;
+  background: #FFFFFF;
+  border: 1px solid var(--apple-border);
+  border-radius: 10px;
   width: 100%;
   display: block;
-  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5);
 }
 
 .cross-hint {
-  font-size: 10px;
-  color: var(--text-secondary);
-  margin-top: 6px;
+  font-size: 10.5px;
+  color: var(--apple-text-secondary);
+  margin-top: 8px;
   line-height: 1.4;
 }
 
 /* ==========================================================================
-   Bottom Engineering Deck (Smartisan Studio Workbench Style)
+   Bottom Engineering Deck (Apple Clean Dashboard)
    ========================================================================== */
 .app-deck {
-  background: linear-gradient(180deg, #F3EFE7 0%, #ECE6DC 100%);
-  border-top: 1px solid var(--border-strong);
-  box-shadow: 0 -4px 16px rgba(60, 45, 30, 0.05);
-  padding: 10px 20px 12px 20px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-top: 1px solid var(--apple-border);
+  padding: 12px 24px 14px 24px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   z-index: 100;
   flex-shrink: 0;
 }
 
-/* Metrics Row Strip */
+/* Metrics Row */
 .deck-metrics-strip {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
+  gap: 10px;
 }
 
 .deck-metric-cell {
-  background: linear-gradient(180deg, #FFFFFF 0%, #FAF6EE 100%);
-  border: 1px solid #D6CCBE;
-  box-shadow: 0 1px 3px rgba(60, 45, 30, 0.06), inset 0 1px 0 #FFF;
-  border-radius: 7px;
-  padding: 6px 12px;
+  background: #FFFFFF;
+  border: 1px solid var(--apple-border-subtle);
+  border-radius: 10px;
+  padding: 8px 14px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
 .metric-caption {
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 500;
-  color: var(--text-secondary);
+  color: var(--apple-text-secondary);
 }
 
 .math-sym {
   font-family: var(--font-mono);
-  color: #8C440B;
+  color: var(--apple-blue);
 }
 
 .metric-readout {
@@ -603,91 +562,86 @@ body, html {
 }
 
 .val-mono {
-  font-family: var(--font-mono);
-  font-size: 19px;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+  font-size: 21px;
   font-weight: 700;
-  color: #1F1914;
+  color: var(--apple-text-primary);
   letter-spacing: -0.5px;
 }
 
 .unit-sym {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
-  color: var(--text-muted);
+  color: var(--apple-text-secondary);
 }
 
 /* Controls Strip */
 .deck-controls-strip {
-  background: #E5DFD4;
-  border: 1px solid #D0C6B5;
-  box-shadow: inset 0 1px 3px rgba(60, 45, 30, 0.12), 0 1px 0 rgba(255, 255, 255, 0.8);
-  border-radius: 9px;
-  padding: 9px 14px;
+  background: #F5F5F7;
+  border: 1px solid var(--apple-border-subtle);
+  border-radius: 12px;
+  padding: 10px 16px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
-/* Smartisan Tactile Layer Push-Buttons */
+/* Apple Capsule Layer Toggles */
 .toggle-bar {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
 .t-btn {
-  background: linear-gradient(180deg, #FFFFFF 0%, #EFE9DF 100%);
-  border: 1px solid #CDC2B0;
-  box-shadow: 0 2px 4px rgba(60, 45, 30, 0.08), inset 0 1px 0 #FFF;
-  color: var(--text-secondary);
-  font-size: 11.5px;
-  font-weight: 600;
-  padding: 5px 13px;
-  border-radius: 6px;
+  background: #FFFFFF;
+  border: 1px solid var(--apple-border);
+  color: var(--apple-text-primary);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 14px;
+  border-radius: 20px;
   cursor: pointer;
   transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .t-btn:hover {
-  background: linear-gradient(180deg, #FFFFFF 0%, #F5F0E6 100%);
-  color: var(--text-primary);
-  border-color: #BDB09D;
+  background: #F2F2F7;
 }
 
 .t-btn.active {
-  background: linear-gradient(180deg, #D96B14 0%, #B85304 100%);
+  background: var(--apple-blue);
   color: #FFFFFF;
-  border-color: #9C4502;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25), 0 1px 0 rgba(255, 255, 255, 0.6);
+  border-color: var(--apple-blue);
+  box-shadow: 0 2px 8px rgba(0, 113, 227, 0.25);
 }
 
 .t-btn#pill-trans-dielectric.active {
-  background: linear-gradient(180deg, #8A6516 0%, #6E4F0D 100%);
-  color: #FFFFFF;
-  border-color: #5A4007;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25), 0 1px 0 rgba(255, 255, 255, 0.6);
+  background: #34C759;
+  border-color: #34C759;
+  box-shadow: 0 2px 8px rgba(52, 199, 89, 0.25);
 }
 
 .t-btn#pill-pause.active {
-  background: linear-gradient(180deg, #C2410C 0%, #9A3412 100%);
-  color: #FFFFFF;
-  border-color: #7C2D12;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25), 0 1px 0 rgba(255, 255, 255, 0.6);
+  background: var(--apple-orange);
+  border-color: var(--apple-orange);
+  box-shadow: 0 2px 8px rgba(255, 149, 0, 0.25);
 }
 
-/* Parameters Grid with Precision Inset Inputs */
+/* Parameters Grid */
 .params-deck-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-  gap: 14px;
+  gap: 16px;
   align-items: center;
 }
 
 .param-input-group {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
 }
 
 .param-label-row {
@@ -697,37 +651,36 @@ body, html {
 }
 
 .p-title {
-  font-size: 11.5px;
-  color: var(--text-secondary);
+  font-size: 12px;
+  color: var(--apple-text-primary);
   font-weight: 600;
 }
 
-/* Tactile Input Slot */
+/* Apple Native Input Slot */
 .input-with-unit {
   display: flex;
   align-items: center;
   background: #FFFFFF;
-  border: 1px solid #C9BEAC;
-  box-shadow: inset 0 1px 2px rgba(60, 45, 30, 0.1);
-  border-radius: 5px;
-  padding: 2px 6px;
-  transition: border-color 0.15s ease;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 6px;
+  padding: 2px 8px;
+  transition: all 0.15s ease;
 }
 
 .input-with-unit:focus-within {
-  border-color: var(--accent-amber);
-  box-shadow: inset 0 1px 2px rgba(60, 45, 30, 0.1), 0 0 0 2px rgba(217, 107, 20, 0.2);
+  border-color: var(--apple-blue);
+  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
 }
 
 .param-num-input {
-  width: 54px;
+  width: 52px;
   background: transparent;
   border: none;
   outline: none;
   font-family: var(--font-mono);
-  font-size: 12.5px;
-  font-weight: 700;
-  color: #1F1914;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--apple-text-primary);
   text-align: right;
   padding-right: 4px;
   -moz-appearance: textfield;
@@ -743,33 +696,32 @@ body, html {
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
-  color: var(--text-muted);
+  color: var(--apple-text-secondary);
 }
 
 .secondary-readout {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 10.5px;
   font-weight: 500;
-  color: var(--text-muted);
+  color: var(--apple-text-secondary);
   text-align: right;
 }
 
 .mono-badge {
   font-family: var(--font-mono);
-  font-size: 11.5px;
-  font-weight: 700;
-  color: #1F1914;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--apple-text-primary);
 }
 
-/* Inset Tactile Sliders (Physical Track & Ceramic Thumb) */
+/* Apple System Slider */
 input[type="range"] {
   -webkit-appearance: none;
   width: 100%;
-  height: 6px;
-  background: #D4CDBC;
-  border-radius: 3px;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 2px;
   outline: none;
-  box-shadow: inset 0 1px 2px rgba(60, 45, 30, 0.2), 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 input[type="range"]::-webkit-slider-thumb {
@@ -777,10 +729,10 @@ input[type="range"]::-webkit-slider-thumb {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: linear-gradient(180deg, #FFFFFF 0%, #E8E2D5 100%);
+  background: #FFFFFF;
   cursor: pointer;
-  border: 1px solid #BFB5A2;
-  box-shadow: 0 2px 5px rgba(60, 45, 30, 0.22), 0 1px 1px rgba(0, 0, 0, 0.1);
+  border: 0.5px solid rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.16), 0 1px 1px rgba(0, 0, 0, 0.08);
   transition: transform 0.1s ease;
 }
 
@@ -790,13 +742,12 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 .flat-select {
   background: #FFFFFF;
-  border: 1px solid #C9BEAC;
-  box-shadow: 0 1px 2px rgba(60, 45, 30, 0.08);
-  color: #1F1914;
-  font-size: 11.5px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  color: var(--apple-text-primary);
+  font-size: 12px;
   font-weight: 500;
-  padding: 4px 6px;
-  border-radius: 5px;
+  padding: 5px 8px;
+  border-radius: 6px;
   outline: none;
   cursor: pointer;
 }
@@ -810,8 +761,8 @@ input[type="range"]::-webkit-slider-thumb:hover {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(40, 30, 20, 0.45);
-  backdrop-filter: blur(6px);
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -819,10 +770,10 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 
 .modal-dialog {
-  background: linear-gradient(180deg, #FAF8F5 0%, #F2ECE2 100%);
-  border: 1px solid #D5CCBE;
-  box-shadow: 0 20px 48px rgba(40, 30, 20, 0.25);
-  border-radius: 12px;
+  background: #FFFFFF;
+  border: 1px solid var(--apple-border);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.15);
+  border-radius: 16px;
   width: 90%;
   max-width: 680px;
   max-height: 85vh;
@@ -834,43 +785,42 @@ input[type="range"]::-webkit-slider-thumb:hover {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 20px;
-  border-bottom: 1px solid #DFD7C9;
+  padding: 16px 22px;
+  border-bottom: 1px solid var(--apple-border);
 }
 
 .modal-header h2 {
-  font-size: 15.5px;
+  font-size: 16px;
   font-weight: 600;
-  color: #1F1914;
+  color: var(--apple-text-primary);
 }
 
 .modal-body {
-  padding: 20px;
+  padding: 22px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  font-size: 13px;
+  font-size: 13.5px;
   line-height: 1.6;
-  color: var(--text-secondary);
+  color: var(--apple-text-secondary);
 }
 
 .modal-block h3 {
-  font-size: 13.5px;
-  color: var(--accent-amber);
+  font-size: 14px;
+  color: var(--apple-blue);
   margin-bottom: 6px;
 }
 
 .math-box {
-  background: #EFE9DF;
-  border: 1px solid #D9D0C1;
-  box-shadow: inset 0 1px 2px rgba(60, 45, 30, 0.08);
-  padding: 9px;
-  border-radius: 6px;
+  background: #F5F5F7;
+  border: 1px solid var(--apple-border-subtle);
+  padding: 10px;
+  border-radius: 8px;
   text-align: center;
   font-family: var(--font-mono);
-  font-size: 14px;
-  color: #8C440B;
-  font-weight: bold;
+  font-size: 15px;
+  color: var(--apple-blue);
+  font-weight: 600;
   margin: 8px 0;
 }
