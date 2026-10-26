@@ -119,6 +119,12 @@
       setMode('single-high');
     }
 
+    // Automated headless video recording hook (?record=name)
+    const recordParam = urlParams.get('record');
+    if (recordParam) {
+      startHeadlessRecording(recordParam);
+    }
+
     animate();
   }
 
@@ -135,7 +141,7 @@
     camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
     applyCameraPreset('isometric');
 
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, preserveDrawingBuffer: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
@@ -982,6 +988,101 @@
     render2DCrossSection();
 
     renderer.render(scene, camera);
+
+    if (recCtx && isRecordingActive) {
+      // Solid Apple Studio background to prevent YUV color washing
+      recCtx.fillStyle = '#F5F5F7';
+      recCtx.fillRect(0, 0, recCanvas.width, recCanvas.height);
+
+      // Draw 3D scene
+      recCtx.drawImage(renderer.domElement, 0, 0, recCanvas.width, recCanvas.height);
+
+      // Top Left Mode Pill Tag
+      recCtx.save();
+      recCtx.fillStyle = '#FFFFFF';
+      recCtx.strokeStyle = 'rgba(0, 0, 0, 0.12)';
+      recCtx.lineWidth = 1;
+      const tagW = 340;
+      const tagH = 36;
+      recCtx.beginPath();
+      recCtx.roundRect(24, 24, tagW, tagH, 18);
+      recCtx.fill();
+      recCtx.stroke();
+
+      recCtx.fillStyle = '#0071E3';
+      recCtx.font = '700 11px -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif';
+      recCtx.fillText('RF/EM LAB', 38, 46);
+
+      recCtx.fillStyle = '#1D1D1F';
+      recCtx.font = '600 12.5px -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif';
+      let titleStr = '单端高速微带线 · 坡印廷能流传输';
+      if (state.mode === 'differential') titleStr = '高速差分对 · 奇模耦合与抗噪';
+      else if (state.mode === 'single-low') titleStr = '单端低速信号 · 电子热漂移与回流';
+      recCtx.fillText(titleStr, 110, 46);
+      recCtx.restore();
+
+      // Top Right Oscilloscope Card
+      recCtx.save();
+      const cardW = 320;
+      const cardH = 160;
+      const cardX = recCanvas.width - cardW - 24;
+      const cardY = 24;
+
+      recCtx.fillStyle = '#FFFFFF';
+      recCtx.strokeStyle = 'rgba(0, 0, 0, 0.12)';
+      recCtx.lineWidth = 1;
+      recCtx.beginPath();
+      recCtx.roundRect(cardX, cardY, cardW, cardH, 14);
+      recCtx.fill();
+      recCtx.stroke();
+
+      recCtx.fillStyle = '#1D1D1F';
+      recCtx.font = '600 12px -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif';
+      recCtx.fillText('信号示波器 (实时监视)', cardX + 16, cardY + 22);
+
+      // Scope live canvas
+      recCtx.drawImage(scopeCanvas, cardX + 12, cardY + 32, cardW - 24, cardH - 44);
+      recCtx.restore();
+    }
+  }
+
+  // --- Headless Recording Utility ---
+  let recCanvas = null;
+  let recCtx = null;
+  let mediaRecorder = null;
+  let isRecordingActive = false;
+
+  function startHeadlessRecording(name) {
+    recCanvas = document.createElement('canvas');
+    recCanvas.width = 1280;
+    recCanvas.height = 720;
+    recCtx = recCanvas.getContext('2d');
+
+    // Zoom camera slightly closer for punchy video presentation
+    if (camera) {
+      camera.position.set(16, 12, 22);
+      if (controls) controls.target.set(0, 1.2, 0);
+    }
+
+    setTimeout(() => {
+      isRecordingActive = true;
+      const stream = recCanvas.captureStream(30);
+      const chunks = [];
+      mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+      mediaRecorder.ondataavailable = e => {
+        if (e.data.size > 0) chunks.push(e.data);
+      };
+      mediaRecorder.onstop = async () => {
+        isRecordingActive = false;
+        const blob = new Blob(chunks, { type: 'video/webm' });
+        await fetch(`http://localhost:8234/upload?name=${name}`, { method: 'POST', body: blob });
+        window.__RECORDING_DONE = true;
+      };
+      mediaRecorder.start();
+      setTimeout(() => {
+        mediaRecorder.stop();
+      }, 4200); // 4.2 seconds
+    }, 600);
   }
 
   function updateFieldAnimations() {
